@@ -10,7 +10,6 @@
 	}>();
 
 	const gridStyle = $derived(`grid-template-columns: repeat(${cols}, 1fr);`);
-
 </script>
 
 <div class="grid" style={gridStyle}>

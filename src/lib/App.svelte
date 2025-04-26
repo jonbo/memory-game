@@ -28,12 +28,12 @@
 		numberPositions: new Map<string, number>(), // "row-col" -> number
 		selectedIndices: new Set<number>(), // Indices of correctly selected cells
 		isFlashing: false,
-		isRevealing: false, // For showing numbers on game over
+		isRevealing: false // For showing numbers on game over
 	});
 
 	const presets: Record<string, PresetSettings> = {
 		beginner: { rows: 4, cols: 4, numItems: 5, flashTime: 1.5 },
-		advanced: { rows: 8, cols: 8, numItems: 9, flashTime: 1 },
+		advanced: { rows: 8, cols: 8, numItems: 9, flashTime: 1 }
 	};
 
 	// Apply initial preset
@@ -62,14 +62,13 @@
 		};
 	});
 
-
 	// --- Functions ---
 
 	function initializeGridState() {
 		gameState.cellsData = Array.from({ length: totalCells }, (_, index) => ({
 			number: null, // Actual number in the cell
 			displayNumber: null, // Number currently shown
-			state: 'default' as CellDisplayState,
+			state: 'default' as CellDisplayState
 		}));
 		gameState.numberPositions.clear();
 		gameState.selectedIndices.clear();
@@ -97,7 +96,7 @@
 		// No need to call initializeGridState here, $effect handles it
 	}
 
-	function handleSettingsChange(field: keyof typeof settings, value: number | boolean | string) {
+	function handleSettingsChange(field: string, value: number | boolean | string) {
 		if (typeof field === 'string' && field in settings) {
 			// Type assertion needed because TS doesn't know 'field' matches a key correctly
 			(settings as any)[field] = value;
@@ -113,22 +112,19 @@
 			if (field === 'numItems') {
 				settings.numItems = Math.min(Math.max(settings.numItems, 1), Math.min(totalCells, 20)); // Ensure numItems <= totalCells and <= 20
 			}
-			if (field === 'flashTime') settings.flashTime = Math.min(Math.max(settings.flashTime, 0.1), 5);
+			if (field === 'flashTime')
+				settings.flashTime = Math.min(Math.max(settings.flashTime, 0.1), 5);
 			if (field === 'maxAttempts') settings.maxAttempts = Math.max(settings.maxAttempts, 0);
 		}
 	}
 
-
 	function startGame() {
-		if (gameState.gameActive) return;
-
 		// Ensure numItems is valid before starting
 		if (settings.numItems > totalCells) {
 			gameState.statusMessage = `Cannot start: Number of items (${settings.numItems}) exceeds grid size (${totalCells}).`;
 			settings.numItems = totalCells; // Adjust automatically
 			return;
 		}
-
 
 		stopTimer();
 		initializeGridState(); // Reset grid state completely
@@ -175,7 +171,7 @@
 
 		// Hide numbers after flashTime
 		setTimeout(() => {
-			gameState.cellsData.forEach(cell => {
+			gameState.cellsData.forEach((cell) => {
 				if (cell.state === 'flash') {
 					cell.displayNumber = null;
 					cell.state = 'default';
@@ -199,7 +195,8 @@
 			return;
 		}
 
-		if (targetNumber !== undefined) { // Clicked on a cell with a number
+		if (targetNumber !== undefined) {
+			// Clicked on a cell with a number
 			if (targetNumber === gameState.currentExpectedNumber) {
 				// Correct selection
 				cell.displayNumber = targetNumber;
@@ -213,7 +210,6 @@
 					// Update status for next number
 					gameState.statusMessage = `Correct! Find number ${gameState.currentExpectedNumber}.`;
 				}
-
 			} else {
 				// Wrong number selection
 				handleIncorrectSelection(index, targetNumber);
@@ -232,8 +228,12 @@
 		cell.displayNumber = clickedNumber;
 		cell.state = 'wrong';
 
-		const attemptsLeft = settings.maxAttempts > 0 ? settings.maxAttempts - gameState.attempts : Infinity;
-		const attemptsText = settings.maxAttempts > 0 ? ` (${gameState.attempts}/${settings.maxAttempts} attempts)` : ` (${gameState.attempts} attempts)`;
+		const attemptsLeft =
+			settings.maxAttempts > 0 ? settings.maxAttempts - gameState.attempts : Infinity;
+		const attemptsText =
+			settings.maxAttempts > 0
+				? ` (${gameState.attempts}/${settings.maxAttempts} attempts)`
+				: ` (${gameState.attempts} attempts)`;
 
 		// Check for game over immediately
 		if (attemptsLeft <= 0) {
@@ -259,20 +259,17 @@
 				// Easy mode: Just continue
 				gameState.statusMessage = `Wrong! Try finding ${gameState.currentExpectedNumber}.${attemptsText}`;
 			}
-
 		}, 500); // Delay for showing the wrong state
 	}
 
-
 	function clearSelectionsForHardMode() {
-		gameState.selectedIndices.forEach(idx => {
+		gameState.selectedIndices.forEach((idx) => {
 			gameState.cellsData[idx].state = 'default';
 			gameState.cellsData[idx].displayNumber = null;
 		});
 		gameState.selectedIndices.clear();
 		gameState.currentExpectedNumber = 1;
 	}
-
 
 	function startTimer() {
 		stopTimer(); // Clear existing timer first
@@ -306,7 +303,7 @@
 		} else {
 			gameState.statusMessage = `Game over! You used ${gameState.attempts} attempts.`;
 			// Reveal all numbers on loss
-			gameState.cellsData.forEach(cell => {
+			gameState.cellsData.forEach((cell) => {
 				if (cell.number !== null && cell.state !== 'correct') {
 					cell.displayNumber = cell.number;
 					// Optionally add a 'revealed' state for different styling
@@ -315,7 +312,6 @@
 			});
 		}
 	}
-
 </script>
 
 <main>
@@ -330,18 +326,16 @@
 		easyMode={settings.easyMode}
 		gameActive={gameState.gameActive}
 		selectedPreset={settings.selectedPreset}
-		presets={presets}
+		{presets}
 		onSettingsChange={handleSettingsChange}
 		onPresetChange={applyPreset}
 		onStartGame={startGame}
 	/>
 
-	<Stats
-		gameTime={gameState.gameTime}
-		statusMessage={gameState.statusMessage}
-	/>
+	<Stats gameTime={gameState.gameTime} statusMessage={gameState.statusMessage} />
 
-	{#key settings.rows + '-' + settings.cols} <!-- Re-render Grid if dimensions change -->
+	{#key settings.rows + '-' + settings.cols}
+		<!-- Re-render Grid if dimensions change -->
 		<Grid
 			rows={settings.rows}
 			cols={settings.cols}
@@ -349,7 +343,6 @@
 			onCellClick={handleCellClick}
 		/>
 	{/key}
-
 </main>
 
 <style>

@@ -48,16 +48,22 @@
 	}
 
 	const isCustom = $derived(selectedPreset === 'custom');
-
 </script>
 
 <div class="presets">
 	<label>
 		Difficulty:
-		<select id="preset-select" value={selectedPreset} onchange={handlePresetChange} disabled={gameActive}>
+		<select
+			id="preset-select"
+			value={selectedPreset}
+			onchange={handlePresetChange}
+			disabled={gameActive}
+		>
 			<option value="custom">Custom</option>
 			{#each Object.keys(presets) as presetName}
-				<option value={presetName}>{presetName.charAt(0).toUpperCase() + presetName.slice(1)}</option>
+				<option value={presetName}
+					>{presetName.charAt(0).toUpperCase() + presetName.slice(1)}</option
+				>
 			{/each}
 		</select>
 	</label>
@@ -66,36 +72,81 @@
 <div class="controls">
 	<label>
 		Rows:
-		<input type="number" id="rows-input" min="2" max="12" bind:value={rows} oninput={handleInputChange} disabled={!isCustom || gameActive} />
+		<input
+			type="number"
+			id="rows-input"
+			min="2"
+			max="12"
+			bind:value={rows}
+			oninput={handleInputChange}
+			disabled={!isCustom || gameActive}
+		/>
 	</label>
 	<label>
 		Columns:
-		<input type="number" id="cols-input" min="2" max="12" bind:value={cols} oninput={handleInputChange} disabled={!isCustom || gameActive} />
+		<input
+			type="number"
+			id="cols-input"
+			min="2"
+			max="12"
+			bind:value={cols}
+			oninput={handleInputChange}
+			disabled={!isCustom || gameActive}
+		/>
 	</label>
 	<label>
 		Number of items:
-		<input type="number" id="items-input" min="1" max="20" bind:value={numItems} oninput={handleInputChange} disabled={!isCustom || gameActive} />
+		<input
+			type="number"
+			id="items-input"
+			min="1"
+			max="20"
+			bind:value={numItems}
+			oninput={handleInputChange}
+			disabled={!isCustom || gameActive}
+		/>
 	</label>
 	<label>
 		Flash time (s):
-		<input type="number" id="flashTime-input" min="0.1" max="5" step="0.1" bind:value={flashTime} oninput={handleInputChange} disabled={!isCustom || gameActive} />
+		<input
+			type="number"
+			id="flashTime-input"
+			min="0.1"
+			max="5"
+			step="0.1"
+			bind:value={flashTime}
+			oninput={handleInputChange}
+			disabled={!isCustom || gameActive}
+		/>
 	</label>
 	<label>
 		Max attempts:
-		<input type="number" id="maxAttempts-input" min="0" max="100" bind:value={maxAttempts} oninput={handleInputChange} disabled={gameActive} />
+		<input
+			type="number"
+			id="maxAttempts-input"
+			min="0"
+			max="100"
+			bind:value={maxAttempts}
+			oninput={handleInputChange}
+			disabled={gameActive}
+		/>
 		<span>(0 = unlimited)</span>
 	</label>
 	<label class="checkbox-label">
 		Easy mode:
-		<input type="checkbox" id="easyMode-checkbox" bind:checked={easyMode} onchange={handleInputChange} disabled={gameActive} />
+		<input
+			type="checkbox"
+			id="easyMode-checkbox"
+			bind:checked={easyMode}
+			onchange={handleInputChange}
+			disabled={gameActive}
+		/>
 		<span class="tooltip">Hard mode resets all selections on mistake</span>
 	</label>
 </div>
 
 <div class="controls">
-	<button id="start-button" onclick={onStartGame} disabled={gameActive}>
-		Start New Game
-	</button>
+	<button id="start-button" onclick={onStartGame}> Start New Game </button>
 </div>
 
 <style>
@@ -131,14 +182,16 @@
 		margin-bottom: 15px;
 	}
 
-	select, input[type="number"], button {
+	select,
+	input[type='number'],
+	button {
 		padding: 8px 12px; /* Increased padding */
 		border-radius: 5px;
 		border: 1px solid #ccc;
 		font-size: 14px; /* Slightly smaller font */
 	}
 
-	input[type="number"] {
+	input[type='number'] {
 		width: 60px;
 	}
 
@@ -150,12 +203,7 @@
 		transition: background-color 0.2s;
 	}
 
-	button:hover:not(:disabled) {
+	button:hover {
 		background-color: #45a049;
-	}
-
-	button:disabled {
-		background-color: #cccccc;
-		cursor: not-allowed;
 	}
 </style>

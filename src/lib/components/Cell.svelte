@@ -1,7 +1,12 @@
 <script lang="ts">
 	import type { CellDisplayState } from '$lib/types'; // Assuming types are defined elsewhere
 
-	let { number, displayNumber, state = 'default', onclick } = $props<{
+	let {
+		number,
+		displayNumber,
+		state = 'default',
+		onclick
+	} = $props<{
 		number: number | null; // The actual number in the cell (null if empty)
 		displayNumber: number | null; // The number to show (can differ from actual number during flash/reveal)
 		state?: CellDisplayState;
@@ -9,10 +14,9 @@
 	}>();
 
 	const cellClass = $derived(`cell ${state !== 'default' ? state : ''}`);
-
 </script>
 
-<div class={cellClass} onclick={onclick}>
+<div class={cellClass} {onclick}>
 	{#if displayNumber !== null}
 		{displayNumber}
 	{/if}
@@ -31,7 +35,9 @@
 		cursor: pointer;
 		user-select: none;
 		border-radius: 5px;
-		transition: background-color 0.2s, color 0.2s;
+		transition:
+			background-color 0.2s,
+			color 0.2s;
 		color: #333; /* Default text color */
 	}
 
@@ -40,7 +46,8 @@
 	}
 
 	/* States */
-	.cell.selected { /* Maybe rename 'selected' state if not used, or use for temporary highlight */
+	.cell.selected {
+		/* Maybe rename 'selected' state if not used, or use for temporary highlight */
 		/* background-color: #4caf50; */
 		/* color: white; */
 	}

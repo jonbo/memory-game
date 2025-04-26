@@ -7,7 +7,7 @@
 		numItems,
 		flashTime,
 		maxAttempts,
-		easyMode,
+		allOrNothing,
 		gameActive,
 		selectedPreset,
 		presets,
@@ -20,7 +20,7 @@
 		numItems: number;
 		flashTime: number;
 		maxAttempts: number;
-		easyMode: boolean;
+		allOrNothing: boolean;
 		gameActive: boolean;
 		selectedPreset: string;
 		presets: Record<string, PresetSettings>;
@@ -119,8 +119,8 @@
 			disabled={!isCustom || gameActive}
 		/>
 	</label>
-	<label>
-		Max attempts:
+	<label title="(0 = unlimited)">
+		Max attempts :
 		<input
 			type="number"
 			id="maxAttempts-input"
@@ -130,18 +130,16 @@
 			oninput={handleInputChange}
 			disabled={gameActive}
 		/>
-		<span>(0 = unlimited)</span>
 	</label>
-	<label class="checkbox-label">
-		Easy mode:
+	<label title="When checked, resets all selections on a mistake" class="checkbox-label">
+		<span>All Or Nothing</span>:
 		<input
 			type="checkbox"
-			id="easyMode-checkbox"
-			bind:checked={easyMode}
+			id="allOrNothing-checkbox"
+			bind:checked={allOrNothing}
 			onchange={handleInputChange}
 			disabled={gameActive}
 		/>
-		<span class="tooltip">Hard mode resets all selections on mistake</span>
 	</label>
 </div>
 

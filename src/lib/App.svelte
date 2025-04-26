@@ -12,7 +12,7 @@
 		numItems: 5,
 		flashTime: 1.2,
 		maxAttempts: 0, // 0 = unlimited
-		easyMode: true,
+		allOrNothing: false,
 		selectedPreset: 'beginner' // Start with beginner preset
 	});
 
@@ -33,6 +33,7 @@
 
 	const presets: Record<string, PresetSettings> = {
 		beginner: { rows: 4, cols: 4, numItems: 5, flashTime: 1.2 },
+		hard: { rows: 6, cols: 6, numItems: 7, flashTime: 1.1 },
 		advanced: { rows: 8, cols: 8, numItems: 9, flashTime: 1 }
 	};
 
@@ -88,9 +89,9 @@
 				settings.cols = preset.cols;
 				settings.numItems = preset.numItems;
 				settings.flashTime = preset.flashTime;
-				// Keep maxAttempts and easyMode as they are, or reset them if desired
+				// Keep maxAttempts and allOrNothing as they are, or reset them if desired
 				// settings.maxAttempts = 0;
-				// settings.easyMode = true;
+				// settings.allOrNothing = true;
 			}
 		}
 		// No need to call initializeGridState here, $effect handles it
@@ -250,9 +251,9 @@
 				cell.state = 'default';
 			}
 
-			// Handle easy vs hard mode *after* the wrong cell is cleared
-			if (!settings.easyMode) {
-				// Hard mode: Reset all correct selections
+			// Handle all-or-nothing mode *after* the wrong cell is cleared
+			if (settings.allOrNothing) {
+				// All or nothing mode: Reset all correct selections
 				clearSelectionsForHardMode();
 				gameState.statusMessage = `Wrong! Start again from 1.${attemptsText}`;
 			} else {
@@ -323,7 +324,7 @@
 		numItems={settings.numItems}
 		flashTime={settings.flashTime}
 		maxAttempts={settings.maxAttempts}
-		easyMode={settings.easyMode}
+		allOrNothing={settings.allOrNothing}
 		gameActive={gameState.gameActive}
 		selectedPreset={settings.selectedPreset}
 		{presets}

@@ -18,7 +18,7 @@
 
 	let gameState = $state({
 		gameStatus: 'initial' as GameStatus,
-		statusMessage: 'Select settings and press "Start New Game"',
+		statusMessage: 'Change any settings and press "Start New Game"',
 		attempts: 0,
 		currentExpectedNumber: 1,
 		gameTime: 0, // seconds
@@ -308,6 +308,10 @@
 			});
 		}
 	}
+	function onSurrender() {
+		endGame('surrender');
+		gameState.statusMessage = 'You surrendered! Game over.';
+	}
 </script>
 
 <main>
@@ -320,12 +324,13 @@
 		flashTime={settings.flashTime}
 		maxAttempts={settings.maxAttempts}
 		allOrNothing={settings.allOrNothing}
-		gameActive={gameState.gameStatus !== 'initial'}
+		gameStatus={gameState.gameStatus}
 		selectedPreset={settings.selectedPreset}
 		{presets}
 		onSettingsChange={handleSettingsChange}
 		onPresetChange={applyPreset}
 		onStartGame={startGame}
+		{onSurrender}
 	/>
 
 	<Stats

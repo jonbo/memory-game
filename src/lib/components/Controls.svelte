@@ -13,7 +13,8 @@
 		presets,
 		onSettingsChange,
 		onPresetChange,
-		onStartGame
+		onStartGame,
+		onSurrender
 	} = $props<{
 		rows: number;
 		cols: number;
@@ -27,6 +28,7 @@
 		onSettingsChange: (field: string, value: number | boolean) => void;
 		onPresetChange: (presetName: string) => void;
 		onStartGame: () => void;
+		onSurrender: () => void;
 	}>();
 
 	function handleInputChange(event: Event) {
@@ -47,9 +49,7 @@
 		onPresetChange(target.value);
 	}
 
-	const isCustom = $derived(selectedPreset === 'custom');
-	const isInitial = $derived(gameStatus === 'initial');
-	const disabled = $derived(!isInitial || !isCustom);
+	const isGameActive = $derived(gameStatus === 'active' || gameStatus === 'flashing');
 </script>
 
 <div class="presets">
@@ -59,7 +59,7 @@
 			id="preset-select"
 			value={selectedPreset}
 			onchange={handlePresetChange}
-			disabled={!isInitial}
+			disabled={isGameActive}
 		>
 			<option value="custom">Custom</option>
 			{#each Object.keys(presets) as presetName}
@@ -81,7 +81,7 @@
 			max="12"
 			bind:value={rows}
 			oninput={handleInputChange}
-			{disabled}
+			disabled={isGameActive}
 		/>
 	</label>
 	<label>
@@ -93,7 +93,7 @@
 			max="12"
 			bind:value={cols}
 			oninput={handleInputChange}
-			{disabled}
+			disabled={isGameActive}
 		/>
 	</label>
 	<label>
@@ -105,7 +105,7 @@
 			max="20"
 			bind:value={numItems}
 			oninput={handleInputChange}
-			{disabled}
+			disabled={isGameActive}
 		/>
 	</label>
 	<label>
@@ -118,7 +118,7 @@
 			step="0.1"
 			bind:value={flashTime}
 			oninput={handleInputChange}
-			{disabled}
+			disabled={isGameActive}
 		/>
 	</label>
 	<label title="(0 = unlimited)">
@@ -130,7 +130,7 @@
 			max="100"
 			bind:value={maxAttempts}
 			oninput={handleInputChange}
-			disabled={!isInitial}
+			disabled={isGameActive}
 		/>
 	</label>
 	<label title="When checked, resets all selections on a mistake" class="checkbox-label">
@@ -140,13 +140,16 @@
 			id="allOrNothing-checkbox"
 			bind:checked={allOrNothing}
 			onchange={handleInputChange}
-			disabled={!isInitial}
+			disabled={isGameActive}
 		/>
 	</label>
 </div>
 
 <div class="controls">
-	<button id="start-button" onclick={onStartGame} disabled={!isInitial}>Start New Game</button>
+	<button id="start-button" onclick={onStartGame}>Start New Game</button>
+	{#if isGameActive}
+		<button id="surrender-button" onclick={onSurrender} class="surrender">Surrender</button>
+	{/if}
 </div>
 
 <style>
@@ -205,5 +208,8 @@
 
 	button:hover {
 		background-color: #45a049;
+	}
+	#surrender-button {
+		background-color: #f44336;
 	}
 </style>

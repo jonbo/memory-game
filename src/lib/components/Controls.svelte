@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { PresetSettings } from '$lib/types'; // Assuming types are defined elsewhere
+	import type { PresetSettings, GameStatus } from '$lib/types';
 
 	let {
 		rows,
@@ -8,7 +8,7 @@
 		flashTime,
 		maxAttempts,
 		allOrNothing,
-		gameActive,
+		gameStatus = 'initial',
 		selectedPreset,
 		presets,
 		onSettingsChange,
@@ -21,7 +21,7 @@
 		flashTime: number;
 		maxAttempts: number;
 		allOrNothing: boolean;
-		gameActive: boolean;
+		gameStatus?: GameStatus;
 		selectedPreset: string;
 		presets: Record<string, PresetSettings>;
 		onSettingsChange: (field: string, value: number | boolean) => void;
@@ -48,6 +48,8 @@
 	}
 
 	const isCustom = $derived(selectedPreset === 'custom');
+	const isInitial = $derived(gameStatus === 'initial');
+	const disabled = $derived(!isInitial || !isCustom);
 </script>
 
 <div class="presets">
@@ -57,7 +59,7 @@
 			id="preset-select"
 			value={selectedPreset}
 			onchange={handlePresetChange}
-			disabled={gameActive}
+			disabled={!isInitial}
 		>
 			<option value="custom">Custom</option>
 			{#each Object.keys(presets) as presetName}
@@ -79,7 +81,7 @@
 			max="12"
 			bind:value={rows}
 			oninput={handleInputChange}
-			disabled={!isCustom || gameActive}
+			{disabled}
 		/>
 	</label>
 	<label>
@@ -91,7 +93,7 @@
 			max="12"
 			bind:value={cols}
 			oninput={handleInputChange}
-			disabled={!isCustom || gameActive}
+			{disabled}
 		/>
 	</label>
 	<label>
@@ -103,7 +105,7 @@
 			max="20"
 			bind:value={numItems}
 			oninput={handleInputChange}
-			disabled={!isCustom || gameActive}
+			{disabled}
 		/>
 	</label>
 	<label>
@@ -116,7 +118,7 @@
 			step="0.1"
 			bind:value={flashTime}
 			oninput={handleInputChange}
-			disabled={!isCustom || gameActive}
+			{disabled}
 		/>
 	</label>
 	<label title="(0 = unlimited)">
@@ -128,7 +130,7 @@
 			max="100"
 			bind:value={maxAttempts}
 			oninput={handleInputChange}
-			disabled={gameActive}
+			disabled={!isInitial}
 		/>
 	</label>
 	<label title="When checked, resets all selections on a mistake" class="checkbox-label">
@@ -138,13 +140,13 @@
 			id="allOrNothing-checkbox"
 			bind:checked={allOrNothing}
 			onchange={handleInputChange}
-			disabled={gameActive}
+			disabled={!isInitial}
 		/>
 	</label>
 </div>
 
 <div class="controls">
-	<button id="start-button" onclick={onStartGame}> Start New Game </button>
+	<button id="start-button" onclick={onStartGame} disabled={!isInitial}>Start New Game</button>
 </div>
 
 <style>

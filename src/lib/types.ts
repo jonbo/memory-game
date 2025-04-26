@@ -1,4 +1,6 @@
-export type CellDisplayState = 'default' | 'flash' | 'correct' | 'wrong' | 'selected'; // Add 'selected' if needed
+export type CellDisplayState = 'default' | 'flash' | 'correct' | 'wrong' | 'selected';
+
+export type GameStatus = 'initial' | 'flashing' | 'active' | 'won' | 'loss' | 'surrender';
 
 export interface CellState {
 	number: number | null; // The actual number identity

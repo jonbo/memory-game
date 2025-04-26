@@ -3,7 +3,7 @@
 	import Controls from './components/Controls.svelte';
 	import Stats from './components/Stats.svelte';
 	import Grid from './components/Grid.svelte';
-	import type { CellState, PresetSettings, CellDisplayState } from './types'; // Define these types
+	import type { CellState, PresetSettings, CellDisplayState, GameStatus } from './types';
 
 	// --- Game Settings & State ---
 	let settings = $state({
@@ -17,7 +17,7 @@
 	});
 
 	let gameState = $state({
-		gameActive: false,
+		gameStatus: 'initial' as GameStatus,
 		statusMessage: 'Select settings and press "Start New Game"',
 		attempts: 0,
 		currentExpectedNumber: 1,
@@ -26,9 +26,7 @@
 		startTime: 0,
 		cellsData: [] as CellState[], // Holds the state for each cell
 		numberPositions: new Map<string, number>(), // "row-col" -> number
-		selectedIndices: new Set<number>(), // Indices of correctly selected cells
-		isFlashing: false,
-		isRevealing: false // For showing numbers on game over
+		selectedIndices: new Set<number>() // Indices of correctly selected cells
 	});
 
 	const presets: Record<string, PresetSettings> = {
@@ -45,18 +43,18 @@
 
 	// --- Effects ---
 	$effect(() => {
-		// Recalculate cell data when grid size changes (and game not active)
-		if (!gameState.gameActive) {
+		// Recalculate cell data when grid size changes (and game not in progress)
+		if (gameState.gameStatus === 'initial') {
 			initializeGridState();
 		}
 	});
 
 	$effect(() => {
-		// Cleanup timer on component unmount or when game becomes inactive
+		// Cleanup timer on component unmount or when game ends
 		const currentTimer = gameState.timerInterval;
-		const active = gameState.gameActive;
+		const isActive = gameState.gameStatus === 'active' || gameState.gameStatus === 'flashing';
 		return () => {
-			if (!active && currentTimer) {
+			if (!isActive && currentTimer) {
 				clearInterval(currentTimer);
 				gameState.timerInterval = null;
 			}
@@ -76,8 +74,7 @@
 		gameState.currentExpectedNumber = 1;
 		gameState.attempts = 0;
 		gameState.gameTime = 0;
-		gameState.isFlashing = false;
-		gameState.isRevealing = false;
+		gameState.gameStatus = 'initial';
 	}
 
 	function applyPreset(presetName: string) {
@@ -129,7 +126,7 @@
 
 		stopTimer();
 		initializeGridState(); // Reset grid state completely
-		gameState.gameActive = true;
+		gameState.gameStatus = 'flashing';
 		gameState.statusMessage = 'Generating board...';
 
 		// Use tick to ensure UI updates before potentially blocking generation
@@ -159,7 +156,6 @@
 	}
 
 	function flashNumbers() {
-		gameState.isFlashing = true;
 		gameState.statusMessage = 'Remember the positions...';
 
 		// Show numbers
@@ -178,14 +174,14 @@
 					cell.state = 'default';
 				}
 			});
-			gameState.isFlashing = false;
+			gameState.gameStatus = 'active';
 			gameState.statusMessage = `Click cells in order: 1 to ${settings.numItems}`;
 			startTimer();
 		}, settings.flashTime * 1000);
 	}
 
 	function handleCellClick(row: number, col: number) {
-		if (!gameState.gameActive || gameState.isFlashing || gameState.isRevealing) return;
+		if (gameState.gameStatus !== 'active') return;
 
 		const index = row * settings.cols + col;
 		const cell = gameState.cellsData[index];
@@ -206,7 +202,7 @@
 				gameState.currentExpectedNumber++;
 
 				if (gameState.selectedIndices.size === settings.numItems) {
-					endGame(true); // Won
+					endGame('won'); // Won
 				} else {
 					// Update status for next number
 					gameState.statusMessage = `Correct! Find number ${gameState.currentExpectedNumber}.`;
@@ -239,7 +235,7 @@
 		// Check for game over immediately
 		if (attemptsLeft <= 0) {
 			gameState.statusMessage = `Wrong!${attemptsText}`;
-			setTimeout(() => endGame(false), 100); // Short delay before ending
+			setTimeout(() => endGame('loss'), 100); // Short delay before ending
 			return; // Don't proceed further
 		}
 
@@ -288,23 +284,21 @@
 	}
 
 	function updateTimerDisplay() {
-		if (gameState.gameActive) {
+		if (gameState.gameStatus === 'active') {
 			gameState.gameTime = Math.floor((Date.now() - gameState.startTime) / 1000);
 		}
 		// No need to manually update DOM, Stats component reacts to gameTime prop
 	}
 
-	function endGame(won: boolean) {
+	function endGame(status: 'won' | 'loss' | 'surrender') {
 		stopTimer();
-		//gameState.gameActive = false;
-		//gameState.isRevealing = !won; // Set revealing flag if lost
-		gameState.isRevealing = true; // Always reveal numbers on game over
+		gameState.gameStatus = status;
 
-		if (won) {
+		if (status === 'won') {
 			gameState.statusMessage = `Congratulations! You won in ${gameState.gameTime} seconds!`;
 		} else {
 			gameState.statusMessage = `Game over! You used ${gameState.attempts} attempts.`;
-			// Reveal all numbers on loss
+			// Reveal all numbers on non-win
 			gameState.cellsData.forEach((cell) => {
 				if (cell.number !== null && cell.state !== 'correct') {
 					cell.displayNumber = cell.number;
@@ -326,7 +320,7 @@
 		flashTime={settings.flashTime}
 		maxAttempts={settings.maxAttempts}
 		allOrNothing={settings.allOrNothing}
-		gameActive={gameState.gameActive}
+		gameActive={gameState.gameStatus !== 'initial'}
 		selectedPreset={settings.selectedPreset}
 		{presets}
 		onSettingsChange={handleSettingsChange}
@@ -334,7 +328,11 @@
 		onStartGame={startGame}
 	/>
 
-	<Stats gameTime={gameState.gameTime} statusMessage={gameState.statusMessage} />
+	<Stats
+		gameStatus={gameState.gameStatus}
+		gameTime={gameState.gameTime}
+		statusMessage={gameState.statusMessage}
+	/>
 
 	{#key settings.rows + '-' + settings.cols}
 		<!-- Re-render Grid if dimensions change -->

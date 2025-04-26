@@ -1,20 +1,34 @@
 <script lang="ts">
-	let { gameTime, statusMessage } = $props<{
+	import type { GameStatus } from '$lib/types';
+
+	let {
+		gameTime = 0,
+		statusMessage = '',
+		gameStatus = 'initial'
+	} = $props<{
 		gameTime: number;
 		statusMessage: string;
+		gameStatus?: GameStatus;
 	}>();
 
-	const formattedTime = $derived.by(() => {
-		const minutes = Math.floor(gameTime / 60);
-		const seconds = gameTime % 60;
-		return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-	});
+	function formatTime(seconds: number): string {
+		const minutes = Math.floor(seconds / 60);
+		const remainingSeconds = seconds % 60;
+		return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+	}
+
+	const displayTime = $derived(formatTime(gameTime));
+	const shouldShowTimer = $derived(gameStatus !== 'initial');
 </script>
 
-<div class="stats">
-	<div class="timer">Time: {formattedTime}</div>
+{#if shouldShowTimer}
+	<div class="stats">
+		<div class="timer">Time: {displayTime}</div>
+		<div class="status">{statusMessage}</div>
+	</div>
+{:else}
 	<div class="status">{statusMessage}</div>
-</div>
+{/if}
 
 <style>
 	.stats {
@@ -23,7 +37,6 @@
 		align-items: center;
 		margin-bottom: 20px;
 		gap: 10px;
-		min-height: 60px; /* Ensure space even when status is short */
 	}
 
 	.timer {
@@ -32,10 +45,9 @@
 	}
 
 	.status {
-		font-size: 16px; /* Slightly smaller */
+		font-size: 18px;
 		font-weight: bold;
-		min-height: 24px; /* Prevent layout shifts */
+		height: 24px;
 		text-align: center;
-		color: #333;
 	}
 </style>

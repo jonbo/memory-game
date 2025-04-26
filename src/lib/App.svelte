@@ -78,6 +78,8 @@
 	}
 
 	function applyPreset(presetName: string) {
+		gameState.gameStatus = 'initial'; // Reset game status on preset change
+
 		settings.selectedPreset = presetName;
 		if (presetName !== 'custom') {
 			const preset = presets[presetName];

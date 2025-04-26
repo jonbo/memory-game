@@ -1,0 +1,18 @@
+export type CellDisplayState = 'default' | 'flash' | 'correct' | 'wrong' | 'selected'; // Add 'selected' if needed
+
+export interface CellState {
+	number: number | null; // The actual number identity
+	displayNumber: number | null; // The number currently shown on the cell
+	state: CellDisplayState;
+}
+
+export interface PresetSettings {
+	rows: number;
+	cols: number;
+	numItems: number;
+	flashTime: number;
+	// maxAttempts?: number; // Optional if presets don't define them
+	// easyMode?: boolean;
+}
+
+// Add other shared types as needed

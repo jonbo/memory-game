@@ -7,13 +7,13 @@
 
 	// --- Game Settings & State ---
 	let settings = $state({
-		rows: 8,
-		cols: 8,
-		numItems: 9,
-		flashTime: 1, // seconds
+		rows: 4,
+		cols: 4,
+		numItems: 5,
+		flashTime: 1.2,
 		maxAttempts: 0, // 0 = unlimited
 		easyMode: true,
-		selectedPreset: 'advanced' // Start with a preset
+		selectedPreset: 'beginner' // Start with beginner preset
 	});
 
 	let gameState = $state({
@@ -32,7 +32,7 @@
 	});
 
 	const presets: Record<string, PresetSettings> = {
-		beginner: { rows: 4, cols: 4, numItems: 5, flashTime: 1.5 },
+		beginner: { rows: 4, cols: 4, numItems: 5, flashTime: 1.2 },
 		advanced: { rows: 8, cols: 8, numItems: 9, flashTime: 1 }
 	};
 

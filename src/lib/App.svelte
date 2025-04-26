@@ -95,6 +95,8 @@
 	}
 
 	function handleSettingsChange(field: string, value: number | boolean | string) {
+		gameState.gameStatus = 'initial'; // Reset game status on settings change
+
 		if (typeof field === 'string' && field in settings) {
 			// Type assertion needed because TS doesn't know 'field' matches a key correctly
 			(settings as any)[field] = value;

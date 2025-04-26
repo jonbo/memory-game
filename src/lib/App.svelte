@@ -296,8 +296,9 @@
 
 	function endGame(won: boolean) {
 		stopTimer();
-		gameState.gameActive = false;
-		gameState.isRevealing = !won; // Set revealing flag if lost
+		//gameState.gameActive = false;
+		//gameState.isRevealing = !won; // Set revealing flag if lost
+		gameState.isRevealing = true; // Always reveal numbers on game over
 
 		if (won) {
 			gameState.statusMessage = `Congratulations! You won in ${gameState.gameTime} seconds!`;

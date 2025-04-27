@@ -1,30 +1,18 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition';
-	import type { PresetSettings, GameStatus } from '$lib/types';
+	import type { PresetSettings, GameStatus, GameSettings } from '$lib/types';
 
 	let {
-		rows,
-		cols,
-		numItems,
-		flashTime,
-		maxAttempts,
-		allOrNothing,
+		settings,
 		gameStatus = 'initial',
-		selectedPreset,
 		presets,
 		onSettingsChange,
 		onPresetChange,
 		onStartGame,
 		onSurrender
 	} = $props<{
-		rows: number;
-		cols: number;
-		numItems: number;
-		flashTime: number;
-		maxAttempts: number;
-		allOrNothing: boolean;
+		settings: GameSettings;
 		gameStatus?: GameStatus;
-		selectedPreset: string;
 		presets: Record<string, PresetSettings>;
 		onSettingsChange: (field: string, value: number | boolean) => void;
 		onPresetChange: (presetName: string) => void;
@@ -32,9 +20,12 @@
 		onSurrender: () => void;
 	}>();
 
+	const isGameActive = $derived(gameStatus === 'active' || gameStatus === 'flashing');
+	let showSettings = $state(true); // Control settings visibility
+
 	function handleInputChange(event: Event) {
 		const target = event.target as HTMLInputElement | HTMLSelectElement;
-		const field = target.id.split('-')[0]; // e.g., 'rows' from 'rows-input'
+		const field = target.id.split('-')[0];
 		let value: number | boolean;
 
 		if (target.type === 'checkbox') {
@@ -49,9 +40,6 @@
 		const target = event.target as HTMLSelectElement;
 		onPresetChange(target.value);
 	}
-
-	const isGameActive = $derived(gameStatus === 'active' || gameStatus === 'flashing');
-	let showSettings = $state(true); // Control settings visibility
 </script>
 
 <div class="presets">
@@ -60,7 +48,7 @@
 			Difficulty:
 			<select
 				id="preset-select"
-				value={selectedPreset}
+				value={settings.selectedPreset}
 				onchange={handlePresetChange}
 				disabled={isGameActive}
 			>
@@ -91,7 +79,7 @@
 				id="rows-input"
 				min="2"
 				max="12"
-				bind:value={rows}
+				bind:value={settings.rows}
 				oninput={handleInputChange}
 				disabled={isGameActive}
 			/>
@@ -103,7 +91,7 @@
 				id="cols-input"
 				min="2"
 				max="12"
-				bind:value={cols}
+				bind:value={settings.cols}
 				oninput={handleInputChange}
 				disabled={isGameActive}
 			/>
@@ -115,7 +103,7 @@
 				id="numItems-input"
 				min="1"
 				max="20"
-				bind:value={numItems}
+				bind:value={settings.numItems}
 				oninput={handleInputChange}
 				disabled={isGameActive}
 			/>
@@ -128,19 +116,19 @@
 				min="0.1"
 				max="5"
 				step="0.1"
-				bind:value={flashTime}
+				bind:value={settings.flashTime}
 				oninput={handleInputChange}
 				disabled={isGameActive}
 			/>
 		</label>
 		<label title="(0 = unlimited)">
-			Max attempts :
+			Max attempts:
 			<input
 				type="number"
 				id="maxAttempts-input"
 				min="0"
 				max="100"
-				bind:value={maxAttempts}
+				bind:value={settings.maxAttempts}
 				oninput={handleInputChange}
 				disabled={isGameActive}
 			/>
@@ -150,7 +138,7 @@
 			<input
 				type="checkbox"
 				id="allOrNothing-checkbox"
-				bind:checked={allOrNothing}
+				bind:checked={settings.allOrNothing}
 				onchange={handleInputChange}
 				disabled={isGameActive}
 			/>

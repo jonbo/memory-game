@@ -17,4 +17,14 @@ export interface PresetSettings {
 	// easyMode?: boolean;
 }
 
+export interface GameSettings {
+    rows: number;
+    cols: number;
+    numItems: number;
+    flashTime: number;
+    maxAttempts: number;
+    allOrNothing: boolean;
+    selectedPreset: string;
+}
+
 // Add other shared types as needed

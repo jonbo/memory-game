@@ -3,10 +3,16 @@
 	import Controls from './components/Controls.svelte';
 	import Stats from './components/Stats.svelte';
 	import Grid from './components/Grid.svelte';
-	import type { CellState, PresetSettings, CellDisplayState, GameStatus } from './types';
+	import type {
+		CellState,
+		PresetSettings,
+		CellDisplayState,
+		GameStatus,
+		GameSettings
+	} from './types';
 
 	// --- Game Settings & State ---
-	let settings = $state({
+	let settings = $state<GameSettings>({
 		rows: 4,
 		cols: 4,
 		numItems: 5,
@@ -316,14 +322,8 @@
 	<h1>Memory Board Game</h1>
 
 	<Controls
-		rows={settings.rows}
-		cols={settings.cols}
-		numItems={settings.numItems}
-		flashTime={settings.flashTime}
-		maxAttempts={settings.maxAttempts}
-		allOrNothing={settings.allOrNothing}
+		{settings}
 		gameStatus={gameState.gameStatus}
-		selectedPreset={settings.selectedPreset}
 		{presets}
 		onSettingsChange={handleSettingsChange}
 		onPresetChange={applyPreset}

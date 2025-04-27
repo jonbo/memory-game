@@ -100,7 +100,7 @@
 		Number of items:
 		<input
 			type="number"
-			id="items-input"
+			id="numItems-input"
 			min="1"
 			max="20"
 			bind:value={numItems}

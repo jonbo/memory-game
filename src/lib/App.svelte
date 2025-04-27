@@ -31,8 +31,8 @@
 
 	const presets: Record<string, PresetSettings> = {
 		beginner: { rows: 4, cols: 4, numItems: 5, flashTime: 1.2 },
-		hard: { rows: 6, cols: 6, numItems: 7, flashTime: 1.1 },
-		advanced: { rows: 8, cols: 8, numItems: 9, flashTime: 1 }
+		hard: { rows: 6, cols: 6, numItems: 7, flashTime: 1.4 },
+		advanced: { rows: 8, cols: 8, numItems: 9, flashTime: 1.6 }
 	};
 
 	// Apply initial preset
@@ -84,13 +84,7 @@
 		if (presetName !== 'custom') {
 			const preset = presets[presetName];
 			if (preset) {
-				settings.rows = preset.rows;
-				settings.cols = preset.cols;
-				settings.numItems = preset.numItems;
-				settings.flashTime = preset.flashTime;
-				// Keep maxAttempts and allOrNothing as they are, or reset them if desired
-				// settings.maxAttempts = 0;
-				// settings.allOrNothing = true;
+				Object.assign(settings, preset); // Apply preset settings
 			}
 		}
 		// No need to call initializeGridState here, $effect handles it

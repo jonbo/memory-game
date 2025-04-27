@@ -153,19 +153,34 @@
 </div>
 
 <style>
+	.presets {
+		margin-bottom: 20px; /* Increased spacing */
+		text-align: center; /* Center the preset dropdown */
+	}
+
+	.presets label {
+		font-weight: bold;
+		color: #555;
+	}
+
 	.controls {
 		margin-bottom: 20px;
 		display: flex;
-		gap: 10px;
+		gap: 15px; /* Increased gap */
 		flex-wrap: wrap;
 		justify-content: center;
 		align-items: center; /* Align items vertically */
+		background-color: #fff; /* White background for the controls area */
+		padding: 20px; /* Add padding */
+		border-radius: 8px; /* Rounded corners */
+		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 	}
 
 	.controls label {
 		display: flex;
 		align-items: center;
-		gap: 5px;
+		gap: 8px; /* Increased gap within label */
+		color: #333; /* Darker text */
 	}
 
 	.checkbox-label {
@@ -173,6 +188,11 @@
 		display: flex;
 		align-items: center;
 		gap: 5px;
+		cursor: pointer; /* Indicate it's clickable */
+	}
+
+	.checkbox-label span {
+		user-select: none; /* Prevent text selection */
 	}
 
 	.tooltip {
@@ -181,21 +201,27 @@
 		margin-left: 5px;
 	}
 
-	.presets {
-		margin-bottom: 15px;
-	}
-
 	select,
 	input[type='number'],
 	button {
-		padding: 8px 12px; /* Increased padding */
+		padding: 10px 15px; /* Further increased padding */
 		border-radius: 5px;
 		border: 1px solid #ccc;
-		font-size: 14px; /* Slightly smaller font */
+		font-size: 14px;
+		transition:
+			border-color 0.2s,
+			box-shadow 0.2s; /* Add transitions */
+	}
+
+	select:focus,
+	input[type='number']:focus {
+		border-color: #4caf50; /* Highlight focus */
+		box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2); /* Focus ring */
+		outline: none;
 	}
 
 	input[type='number'] {
-		width: 60px;
+		width: 65px; /* Slightly wider */
 	}
 
 	button {
@@ -203,13 +229,41 @@
 		color: white;
 		border: none;
 		cursor: pointer;
-		transition: background-color 0.2s;
+		transition:
+			background-color 0.2s,
+			transform 0.1s; /* Add transform transition */
+		font-weight: bold;
 	}
 
 	button:hover {
 		background-color: #45a049;
+		transform: translateY(-1px); /* Slight lift on hover */
 	}
+
+	button:active {
+		transform: translateY(0); /* Press down effect */
+	}
+
+	#start-button {
+		/* Specific styles if needed */
+	}
+
 	#surrender-button {
-		background-color: #f44336;
+		background-color: #f44336; /* Red for surrender */
+	}
+	#surrender-button:hover {
+		background-color: #e53935; /* Darker red on hover */
+	}
+
+	/* Style for disabled inputs */
+	input:disabled,
+	select:disabled,
+	button:disabled {
+		background-color: #e0e0e0;
+		cursor: not-allowed;
+		opacity: 0.7;
+	}
+	.checkbox-label input[type='checkbox']:disabled + span {
+		color: #999; /* Grey out text for disabled checkbox */
 	}
 </style>

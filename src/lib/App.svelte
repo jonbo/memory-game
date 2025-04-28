@@ -25,10 +25,17 @@
 		gameTime: 0, // seconds
 		timerInterval: null as ReturnType<typeof setInterval> | null,
 		startTime: 0,
-		cellsData: [] as CellState[], // Holds the state for each cell
-		numberPositions: new Map<string, number>(), // "row-col" -> number
-		selectedIndices: new Set<number>() // Indices of correctly selected cells
+		cellsData: [] as CellState[]
 	});
+
+	// --- Helper Functions ---
+	function getCellIndex(row: number, col: number): number {
+		return row * settings.cols + col;
+	}
+
+	function getCell(row: number, col: number): CellState {
+		return gameState.cellsData[getCellIndex(row, col)];
+	}
 
 	// --- Derived State ---
 	const totalCells = $derived(settings.rows * settings.cols);
@@ -59,10 +66,9 @@
 		gameState.cellsData = Array.from({ length: totalCells }, (_, index) => ({
 			number: null, // Actual number in the cell
 			displayNumber: null, // Number currently shown
-			state: 'default' as CellDisplayState
+			state: 'default' as CellDisplayState,
+			selected: false
 		}));
-		gameState.numberPositions.clear();
-		gameState.selectedIndices.clear();
 		gameState.currentExpectedNumber = 1;
 		gameState.attempts = 0;
 		gameState.gameTime = 0;
@@ -95,7 +101,7 @@
 
 	function generateNumberPositions() {
 		const usedIndices = new Set<number>();
-		gameState.numberPositions.clear();
+		gameState.cellsData.forEach(cell => cell.number = null); // Reset all numbers
 
 		for (let i = 1; i <= settings.numItems; i++) {
 			let index: number;
@@ -105,10 +111,6 @@
 
 			usedIndices.add(index);
 			gameState.cellsData[index].number = i; // Store the actual number
-
-			const row = Math.floor(index / settings.cols);
-			const col = index % settings.cols;
-			gameState.numberPositions.set(`${row}-${col}`, i);
 		}
 	}
 
@@ -140,46 +142,42 @@
 	function handleCellClick(row: number, col: number) {
 		if (gameState.gameStatus !== 'active') return;
 
-		const index = row * settings.cols + col;
-		const cell = gameState.cellsData[index];
-		const targetNumber = gameState.numberPositions.get(`${row}-${col}`);
-
+		const cell = getCell(row, col);
+		
 		// Ignore clicks on already correctly selected cells or cells being processed
-		if (cell.state === 'correct' || cell.state === 'wrong') {
+		if (cell.selected || cell.state === 'wrong') {
 			return;
 		}
 
-		if (targetNumber !== undefined) {
+		if (cell.number !== null) {
 			// Clicked on a cell with a number
-			if (targetNumber === gameState.currentExpectedNumber) {
+			if (cell.number === gameState.currentExpectedNumber) {
 				// Correct selection
-				cell.displayNumber = targetNumber;
+				cell.displayNumber = cell.number;
 				cell.state = 'correct';
-				gameState.selectedIndices.add(index);
+				cell.selected = true;
 				gameState.currentExpectedNumber++;
 
-				if (gameState.selectedIndices.size === settings.numItems) {
-					endGame('won'); // Won
+				if (gameState.cellsData.filter(c => c.selected).length === settings.numItems) {
+					endGame('won');
 				} else {
-					// Update status for next number
 					gameState.statusMessage = `Correct! Find number ${gameState.currentExpectedNumber}.`;
 				}
 			} else {
 				// Wrong number selection
-				handleIncorrectSelection(index, targetNumber);
+				handleIncorrectSelection(cell);
 			}
 		} else {
 			// Clicked on an empty cell
-			handleIncorrectSelection(index, null);
+			handleIncorrectSelection(cell);
 		}
 	}
 
-	function handleIncorrectSelection(index: number, clickedNumber: number | null) {
+	function handleIncorrectSelection(cell: CellState) {
 		gameState.attempts++;
-		const cell = gameState.cellsData[index];
 
 		// Temporarily show the wrong number (if any) or just mark as wrong
-		cell.displayNumber = clickedNumber;
+		cell.displayNumber = cell.number;
 		cell.state = 'wrong';
 
 		const attemptsLeft =
@@ -217,11 +215,13 @@
 	}
 
 	function clearSelectionsForHardMode() {
-		gameState.selectedIndices.forEach((idx) => {
-			gameState.cellsData[idx].state = 'default';
-			gameState.cellsData[idx].displayNumber = null;
+		gameState.cellsData.forEach(cell => {
+			if (cell.selected) {
+				cell.selected = false;
+				cell.state = 'default';
+				cell.displayNumber = null;
+			}
 		});
-		gameState.selectedIndices.clear();
 		gameState.currentExpectedNumber = 1;
 	}
 

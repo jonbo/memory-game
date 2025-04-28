@@ -79,6 +79,7 @@
 			metaSettings.maxAttempts.min,
 			metaSettings.maxAttempts.max
 		);
+		settings.selectedPreset = 'custom'; // Set to custom when user changes settings
 
 		onSettingsChange(settings);
 	}

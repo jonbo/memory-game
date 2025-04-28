@@ -58,6 +58,7 @@
 
 	const isGameActive = $derived(gameStatus === 'active' || gameStatus === 'flashing');
 	let showSettings = $state(false); // Control settings visibility
+	let hasUnsavedChanges = $state(false); // Track unsaved changes
 
 	const CUSTOM_PRESET_KEY = 'customPresets';
 	let customPresets = $state(JSON.parse(localStorage.getItem(CUSTOM_PRESET_KEY) ?? '{}'));
@@ -87,6 +88,10 @@
 			settings.selectedPreset = 'custom'; // Set to custom when user changes settings
 		}
 
+		if (settings.selectedPreset === 'custom' || settings.selectedPreset in customPresets) {
+			hasUnsavedChanges = true;
+		}
+
 		onSettingsChange(settings);
 	}
 
@@ -96,6 +101,7 @@
 			return;
 		}
 		settings = { ...preset, selectedPreset: presetName };
+		hasUnsavedChanges = false;
 		onSettingsChange(settings);
 	}
 	// Ensure the selected preset is applied
@@ -126,6 +132,7 @@
 		customPresets[presetName] = newPreset;
 		localStorage.setItem(CUSTOM_PRESET_KEY, JSON.stringify(customPresets));
 		settings.selectedPreset = presetName;
+		hasUnsavedChanges = false;
 	}
 
 	function renameCustomPreset(oldName: string) {
@@ -164,14 +171,17 @@
 				onchange={handlePresetChange}
 				disabled={isGameActive}
 			>
-				<option value="custom">Custom</option>
+				<option value="custom">Custom{hasUnsavedChanges ? '*' : ''}</option>
 				{#each Object.keys(presets) as presetName}
 					<option value={presetName}
 						>{presetName.charAt(0).toUpperCase() + presetName.slice(1)}</option
 					>
 				{/each}
 				{#each Object.keys(customPresets) as presetName}
-					<option value={presetName}>{presetName}</option>
+					<option value={presetName}
+						>{presetName}
+						{settings.selectedPreset === presetName && hasUnsavedChanges ? '*' : ''}</option
+					>
 				{/each}
 			</select>
 		</label>

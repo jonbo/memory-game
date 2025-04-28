@@ -21,7 +21,7 @@
 	}>();
 
 	const isGameActive = $derived(gameStatus === 'active' || gameStatus === 'flashing');
-	let showSettings = $state(true); // Control settings visibility
+	let showSettings = $state(false); // Control settings visibility
 	function handleInputChange() {
 		// Validate numeric inputs
 		settings.rows = Math.min(Math.max(settings.rows, 2), 12);

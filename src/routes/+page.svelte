@@ -10,10 +10,18 @@
 </svelte:head>
 
 <style>
-	:global(body) {
-		margin: 0;
-		padding: 0;
-		box-sizing: border-box;
-		background-color: #f0f0f0;
+	:global {
+		body {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+			background-color: #f0f0f0;
+		}
+
+		*,
+		*::before,
+		*::after {
+			box-sizing: border-box;
+		}
 	}
 </style>

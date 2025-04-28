@@ -227,67 +227,79 @@
 
 {#if showSettings}
 	<div class="controls" transition:slide>
-		<label>
-			Rows:
-			<input
-				type="number"
-				id="rows-input"
-				bind:value={settings.rows}
-				oninput={handleInputChange}
-				disabled={isGameActive}
-			/>
-		</label>
-		<label>
-			Columns:
-			<input
-				type="number"
-				id="cols-input"
-				bind:value={settings.cols}
-				oninput={handleInputChange}
-				disabled={isGameActive}
-			/>
-		</label>
-		<label>
-			Number of items:
-			<input
-				type="number"
-				id="numItems-input"
-				bind:value={settings.numItems}
-				oninput={handleInputChange}
-				disabled={isGameActive}
-			/>
-		</label>
-		<label>
-			Flash time (s):
-			<input
-				type="number"
-				id="flashTime-input"
-				step={metaSettings.flashTime.step}
-				bind:value={settings.flashTime}
-				oninput={handleInputChange}
-				disabled={isGameActive}
-			/>
-		</label>
-		<label title="(0 = unlimited)">
-			Max attempts:
-			<input
-				type="number"
-				id="maxAttempts-input"
-				bind:value={settings.maxAttempts}
-				oninput={handleInputChange}
-				disabled={isGameActive}
-			/>
-		</label>
-		<label title="When checked, resets all selections on a mistake" class="checkbox-label">
-			<span>All Or Nothing</span>:
-			<input
-				type="checkbox"
-				id="allOrNothing-checkbox"
-				bind:checked={settings.allOrNothing}
-				onchange={handleInputChange}
-				disabled={isGameActive}
-			/>
-		</label>
+		<div class="setting">
+			<label>
+				<span>Rows</span>
+				<input
+					type="number"
+					id="rows-input"
+					bind:value={settings.rows}
+					oninput={handleInputChange}
+					disabled={isGameActive}
+				/>
+			</label>
+		</div>
+		<div class="setting">
+			<label>
+				<span>Columns</span>
+				<input
+					type="number"
+					id="cols-input"
+					bind:value={settings.cols}
+					oninput={handleInputChange}
+					disabled={isGameActive}
+				/>
+			</label>
+		</div>
+		<div class="setting">
+			<label>
+				<span>Number of items</span>
+				<input
+					type="number"
+					id="numItems-input"
+					bind:value={settings.numItems}
+					oninput={handleInputChange}
+					disabled={isGameActive}
+				/>
+			</label>
+		</div>
+		<div class="setting">
+			<label>
+				<span>Flash time (s)</span>
+				<input
+					type="number"
+					id="flashTime-input"
+					step={metaSettings.flashTime.step}
+					bind:value={settings.flashTime}
+					oninput={handleInputChange}
+					disabled={isGameActive}
+				/>
+			</label>
+		</div>
+		<div class="setting">
+			<label title="(0 = unlimited)">
+				<span>Max attempts</span>
+				<input
+					type="number"
+					id="maxAttempts-input"
+					bind:value={settings.maxAttempts}
+					oninput={handleInputChange}
+					disabled={isGameActive}
+				/>
+			</label>
+		</div>
+		<div class="setting">
+			<label title="When checked, resets all selections on a mistake" class="checkbox-label">
+				<span>All Or Nothing</span>
+				<input
+					type="checkbox"
+					id="allOrNothing-checkbox"
+					bind:checked={settings.allOrNothing}
+					onchange={handleInputChange}
+					disabled={isGameActive}
+				/>
+			</label>
+		</div>
 	</div>
 {/if}
 
@@ -337,41 +349,41 @@
 	}
 
 	.controls {
-		margin-bottom: 20px;
-		display: flex;
-		gap: 15px; /* Increased gap */
-		flex-wrap: wrap;
-		justify-content: center;
-		align-items: center; /* Align items vertically */
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 6px;
+		width: 100%;
+		max-width: 800px;
+		margin: 0 auto 20px;
 		background-color: #fff; /* White background for the controls area */
 		padding: 20px; /* Add padding */
 		border-radius: 8px; /* Rounded corners */
 		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 	}
 
-	.controls label {
+	@media (min-width: 768px) {
+		.controls {
+			grid-template-columns: repeat(2, 1fr);
+			gap: 15px;
+		}
+	}
+
+	.setting {
+		width: 100%;
+		color: #333;
+		background-color: #fff;
+		border: 1px solid #ccc;
+		border-radius: 5px;
+		padding-right: 5px;
+		overflow: hidden;
+	}
+
+	.setting label {
 		display: flex;
 		align-items: center;
-		gap: 8px; /* Increased gap within label */
-		color: #333; /* Darker text */
-	}
-
-	.checkbox-label {
-		position: relative;
-		display: flex;
-		align-items: center;
-		gap: 5px;
-		cursor: pointer; /* Indicate it's clickable */
-	}
-
-	.checkbox-label span {
-		user-select: none; /* Prevent text selection */
-	}
-
-	.tooltip {
-		font-size: 12px;
-		color: #777;
-		margin-left: 5px;
+		width: 100%;
+		height: 100%;
+		justify-content: space-between;
 	}
 
 	select,
@@ -386,11 +398,39 @@
 			box-shadow 0.2s; /* Add transitions */
 	}
 
+	select,
+	input[type='number'] {
+		padding: 5px;
+		border: none;
+		font-size: 14px;
+		transition: box-shadow 0.2s;
+		background: transparent;
+	}
+
 	select:focus,
 	input[type='number']:focus {
 		border-color: #4caf50; /* Highlight focus */
 		box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2); /* Focus ring */
 		outline: none;
+	}
+
+	select:focus,
+	input[type='number']:focus {
+		box-shadow: none;
+		outline: none;
+	}
+
+	.controls label:focus-within {
+		border-color: #4caf50;
+		box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+	}
+	.controls span {
+		border-right: 1px solid #ccc;
+		display: inline-flex;
+		height: 100%;
+		align-items: center;
+		padding: 10px;
+		background: #f7f7f7;
 	}
 
 	input[type='number'] {

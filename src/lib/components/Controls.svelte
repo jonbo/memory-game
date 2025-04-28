@@ -59,6 +59,9 @@
 	const isGameActive = $derived(gameStatus === 'active' || gameStatus === 'flashing');
 	let showSettings = $state(false); // Control settings visibility
 
+	const CUSTOM_PRESET_KEY = 'customPresets';
+	let customPresets = $state(JSON.parse(localStorage.getItem(CUSTOM_PRESET_KEY) ?? '{}'));
+
 	function handleInputChange() {
 		settings.rows = clamp(settings.rows, metaSettings.rows.min, metaSettings.rows.max);
 		settings.cols = clamp(settings.cols, metaSettings.cols.min, metaSettings.cols.max);
@@ -79,13 +82,16 @@
 			metaSettings.maxAttempts.min,
 			metaSettings.maxAttempts.max
 		);
-		settings.selectedPreset = 'custom'; // Set to custom when user changes settings
+		// This allows changing custom presets, but not default ones
+		if (!(settings.selectedPreset in customPresets)) {
+			settings.selectedPreset = 'custom'; // Set to custom when user changes settings
+		}
 
 		onSettingsChange(settings);
 	}
 
 	function applyPreset(presetName: string) {
-		const preset = presets[presetName];
+		const preset = presets[presetName] || customPresets[presetName];
 		if (!preset) {
 			return;
 		}
@@ -100,6 +106,51 @@
 		const presetName = target.value;
 
 		applyPreset(presetName);
+	}
+
+	function saveCustomPreset() {
+		const presetName = !(settings.selectedPreset in customPresets)
+			? `Custom ${Object.keys(customPresets).length + 1}`
+			: settings.selectedPreset;
+
+		const { rows, cols, numItems, flashTime, maxAttempts, allOrNothing } = settings;
+		const newPreset: PresetSettings = {
+			rows,
+			cols,
+			numItems,
+			flashTime,
+			maxAttempts,
+			allOrNothing
+		};
+
+		customPresets[presetName] = newPreset;
+		localStorage.setItem(CUSTOM_PRESET_KEY, JSON.stringify(customPresets));
+		settings.selectedPreset = presetName;
+	}
+
+	function renameCustomPreset(oldName: string) {
+		const newName = prompt('Enter new name:', oldName);
+		if (!newName || newName === oldName || newName in customPresets) return;
+
+		const preset = customPresets[oldName];
+		delete customPresets[oldName];
+		customPresets[newName] = preset;
+		localStorage.setItem(CUSTOM_PRESET_KEY, JSON.stringify(customPresets));
+
+		if (settings.selectedPreset === oldName) {
+			settings.selectedPreset = newName;
+		}
+	}
+
+	function deleteCustomPreset(name: string) {
+		if (!confirm(`Delete preset "${name}"?`)) return;
+
+		delete customPresets[name];
+		localStorage.setItem(CUSTOM_PRESET_KEY, JSON.stringify(customPresets));
+
+		if (settings.selectedPreset === name) {
+			settings.selectedPreset = 'custom';
+		}
 	}
 </script>
 
@@ -119,10 +170,43 @@
 						>{presetName.charAt(0).toUpperCase() + presetName.slice(1)}</option
 					>
 				{/each}
+				{#each Object.keys(customPresets) as presetName}
+					<option value={presetName}>{presetName}</option>
+				{/each}
 			</select>
 		</label>
+
+		{#if settings.selectedPreset === 'custom' || settings.selectedPreset in customPresets}
+			<button
+				class="icon-button"
+				onclick={saveCustomPreset}
+				disabled={isGameActive}
+				title="Save as custom preset"
+			>
+				💾
+			</button>
+		{/if}
+		{#if settings.selectedPreset in customPresets}
+			<button
+				class="icon-button"
+				onclick={() => renameCustomPreset(settings.selectedPreset)}
+				disabled={isGameActive}
+				title="Rename preset"
+			>
+				🏷️
+			</button>
+			<button
+				class="icon-button"
+				onclick={() => deleteCustomPreset(settings.selectedPreset)}
+				disabled={isGameActive}
+				title="Delete preset"
+			>
+				🗑️
+			</button>
+		{/if}
+
 		<button
-			class="settings-toggle"
+			class="icon-button settings-toggle"
 			onclick={() => (showSettings = !showSettings)}
 			title={showSettings ? 'Hide settings' : 'Show settings'}
 		>
@@ -332,6 +416,29 @@
 	}
 	#surrender-button:hover {
 		background-color: #e53935; /* Darker red on hover */
+	}
+
+	.icon-button {
+		background: none;
+		border: none;
+		cursor: pointer;
+		font-size: 1.2em;
+		padding: 5px;
+		border-radius: 50%;
+		transition: background-color 0.2s;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 32px;
+		height: 32px;
+	}
+
+	.icon-button:hover {
+		background-color: rgba(0, 0, 0, 0.1);
+	}
+
+	.icon-button.settings-toggle:hover {
+		transform: rotate(30deg);
 	}
 
 	/* Style for disabled inputs */

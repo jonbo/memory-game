@@ -7,13 +7,14 @@
 
 	// --- Game Settings & State ---
 	let settings = $state<GameSettings>({
+		selectedPreset: 'beginner', // Start with beginner preset
+		// The settings below will be overridden by the preset
 		rows: 4,
 		cols: 4,
 		numItems: 5,
-		flashTime: 1.2,
+		flashTime: 1.5,
 		maxAttempts: 0, // 0 = unlimited
-		allOrNothing: false,
-		selectedPreset: 'beginner' // Start with beginner preset
+		allOrNothing: false
 	});
 
 	let gameState = $state({

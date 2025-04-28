@@ -16,7 +16,7 @@
 			rows: 4,
 			cols: 4,
 			numItems: 5,
-			flashTime: 1.2,
+			flashTime: 1.5,
 			maxAttempts: 0,
 			allOrNothing: false
 		},
@@ -24,7 +24,7 @@
 			rows: 6,
 			cols: 6,
 			numItems: 7,
-			flashTime: 1.5,
+			flashTime: 2,
 			maxAttempts: 0,
 			allOrNothing: false
 		},
@@ -32,7 +32,7 @@
 			rows: 8,
 			cols: 8,
 			numItems: 9,
-			flashTime: 2,
+			flashTime: 2.2,
 			maxAttempts: 0,
 			allOrNothing: false
 		}

@@ -6,7 +6,7 @@
 		rows: { min: 2, max: 12 },
 		cols: { min: 2, max: 12 },
 		numItems: { min: 1, max: 20 },
-		flashTime: { min: 0.1, max: 5 },
+		flashTime: { min: 0.1, max: 5, step: 0.1 },
 		maxAttempts: { min: 0, max: 100 }
 	};
 
@@ -100,8 +100,6 @@
 			<input
 				type="number"
 				id="rows-input"
-				min="2"
-				max="12"
 				bind:value={settings.rows}
 				oninput={handleInputChange}
 				disabled={isGameActive}
@@ -112,8 +110,6 @@
 			<input
 				type="number"
 				id="cols-input"
-				min="2"
-				max="12"
 				bind:value={settings.cols}
 				oninput={handleInputChange}
 				disabled={isGameActive}
@@ -124,8 +120,6 @@
 			<input
 				type="number"
 				id="numItems-input"
-				min="1"
-				max="20"
 				bind:value={settings.numItems}
 				oninput={handleInputChange}
 				disabled={isGameActive}
@@ -136,9 +130,7 @@
 			<input
 				type="number"
 				id="flashTime-input"
-				min="0.1"
-				max="5"
-				step="0.1"
+				step={metaSettings.flashTime.step}
 				bind:value={settings.flashTime}
 				oninput={handleInputChange}
 				disabled={isGameActive}
@@ -149,8 +141,6 @@
 			<input
 				type="number"
 				id="maxAttempts-input"
-				min="0"
-				max="100"
 				bind:value={settings.maxAttempts}
 				oninput={handleInputChange}
 				disabled={isGameActive}

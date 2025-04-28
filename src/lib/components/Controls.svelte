@@ -2,6 +2,18 @@
 	import { slide } from 'svelte/transition';
 	import type { PresetSettings, GameStatus, GameSettings } from '$lib/types';
 
+	const metaSettings = {
+		rows: { min: 2, max: 12 },
+		cols: { min: 2, max: 12 },
+		numItems: { min: 1, max: 20 },
+		flashTime: { min: 0.1, max: 5 },
+		maxAttempts: { min: 0, max: 100 }
+	};
+
+	function clamp(value: number, min: number, max: number): number {
+		return Math.min(Math.max(value, min), max);
+	}
+
 	let {
 		settings = $bindable(),
 		gameStatus = 'initial',
@@ -22,20 +34,31 @@
 
 	const isGameActive = $derived(gameStatus === 'active' || gameStatus === 'flashing');
 	let showSettings = $state(false); // Control settings visibility
+
 	function handleInputChange() {
-		// Validate numeric inputs
-		settings.rows = Math.min(Math.max(settings.rows, 2), 12);
-		settings.cols = Math.min(Math.max(settings.cols, 2), 12);
+		settings.rows = clamp(settings.rows, metaSettings.rows.min, metaSettings.rows.max);
+		settings.cols = clamp(settings.cols, metaSettings.cols.min, metaSettings.cols.max);
 
 		const totalCells = settings.rows * settings.cols;
-
-		settings.numItems = Math.min(Math.max(settings.numItems, 1), Math.min(totalCells, 20)); // Ensure numItems <= totalCells and <= 20
-
-		settings.flashTime = Math.min(Math.max(settings.flashTime, 0.1), 5);
-		settings.maxAttempts = Math.max(settings.maxAttempts, 0);
+		settings.numItems = clamp(
+			settings.numItems,
+			metaSettings.numItems.min,
+			Math.min(totalCells, metaSettings.numItems.max)
+		);
+		settings.flashTime = clamp(
+			settings.flashTime,
+			metaSettings.flashTime.min,
+			metaSettings.flashTime.max
+		);
+		settings.maxAttempts = clamp(
+			settings.maxAttempts,
+			metaSettings.maxAttempts.min,
+			metaSettings.maxAttempts.max
+		);
 
 		onSettingsChange(settings);
 	}
+
 	function handlePresetChange(event: Event) {
 		const target = event.target as HTMLSelectElement;
 		onPresetChange(target.value);

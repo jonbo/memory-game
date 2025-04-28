@@ -3,7 +3,7 @@
 	import type { PresetSettings, GameStatus, GameSettings } from '$lib/types';
 
 	let {
-		settings,
+		settings = $bindable(),
 		gameStatus = 'initial',
 		presets,
 		onSettingsChange,
@@ -14,7 +14,7 @@
 		settings: GameSettings;
 		gameStatus?: GameStatus;
 		presets: Record<string, PresetSettings>;
-		onSettingsChange: (field: string, value: number | boolean) => void;
+		onSettingsChange: (settings: GameSettings) => void;
 		onPresetChange: (presetName: string) => void;
 		onStartGame: () => void;
 		onSurrender: () => void;
@@ -22,20 +22,20 @@
 
 	const isGameActive = $derived(gameStatus === 'active' || gameStatus === 'flashing');
 	let showSettings = $state(true); // Control settings visibility
+	function handleInputChange() {
+		// Validate numeric inputs
+		settings.rows = Math.min(Math.max(settings.rows, 2), 12);
+		settings.cols = Math.min(Math.max(settings.cols, 2), 12);
 
-	function handleInputChange(event: Event) {
-		const target = event.target as HTMLInputElement | HTMLSelectElement;
-		const field = target.id.split('-')[0];
-		let value: number | boolean;
+		const totalCells = settings.rows * settings.cols;
 
-		if (target.type === 'checkbox') {
-			value = (target as HTMLInputElement).checked;
-		} else {
-			value = target.type === 'number' ? parseFloat(target.value) : target.value;
-		}
-		onSettingsChange(field, value);
+		settings.numItems = Math.min(Math.max(settings.numItems, 1), Math.min(totalCells, 20)); // Ensure numItems <= totalCells and <= 20
+
+		settings.flashTime = Math.min(Math.max(settings.flashTime, 0.1), 5);
+		settings.maxAttempts = Math.max(settings.maxAttempts, 0);
+
+		onSettingsChange(settings);
 	}
-
 	function handlePresetChange(event: Event) {
 		const target = event.target as HTMLSelectElement;
 		onPresetChange(target.value);

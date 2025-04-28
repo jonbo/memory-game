@@ -96,28 +96,8 @@
 		// No need to call initializeGridState here, $effect handles it
 	}
 
-	function handleSettingsChange(field: string, value: number | boolean | string) {
+	function handleSettingsChange(newSettings: GameSettings) {
 		gameState.gameStatus = 'initial'; // Reset game status on settings change
-
-		if (typeof field === 'string' && field in settings) {
-			// Type assertion needed because TS doesn't know 'field' matches a key correctly
-			(settings as any)[field] = value;
-
-			// If a setting other than preset is changed, switch to custom
-			if (field !== 'selectedPreset') {
-				settings.selectedPreset = 'custom';
-			}
-
-			// Validate numeric inputs
-			if (field === 'rows') settings.rows = Math.min(Math.max(settings.rows, 2), 12);
-			if (field === 'cols') settings.cols = Math.min(Math.max(settings.cols, 2), 12);
-			if (field === 'numItems') {
-				settings.numItems = Math.min(Math.max(settings.numItems, 1), Math.min(totalCells, 20)); // Ensure numItems <= totalCells and <= 20
-			}
-			if (field === 'flashTime')
-				settings.flashTime = Math.min(Math.max(settings.flashTime, 0.1), 5);
-			if (field === 'maxAttempts') settings.maxAttempts = Math.max(settings.maxAttempts, 0);
-		}
 	}
 
 	function startGame() {
@@ -322,7 +302,7 @@
 	<h1>Memory Board Game</h1>
 
 	<Controls
-		{settings}
+		bind:settings
 		gameStatus={gameState.gameStatus}
 		{presets}
 		onSettingsChange={handleSettingsChange}

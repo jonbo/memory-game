@@ -303,8 +303,14 @@
 	</div>
 {/if}
 
-<div class="controls">
-	<button id="start-button" onclick={onStartGame}>Start New Game</button>
+<div class="controls main-controls">
+	<button
+		class={{
+			solo: !isGameActive
+		}}
+		id="start-button"
+		onclick={onStartGame}>Start New Game</button
+	>
 	{#if isGameActive}
 		<button id="surrender-button" onclick={onSurrender} class="surrender">Surrender</button>
 	{/if}
@@ -359,6 +365,9 @@
 		padding: 20px; /* Add padding */
 		border-radius: 8px; /* Rounded corners */
 		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+	}
+	.controls.main-controls {
+		grid-template-columns: repeat(2, 1fr);
 	}
 
 	@media (min-width: 768px) {
@@ -457,8 +466,8 @@
 		transform: translateY(0); /* Press down effect */
 	}
 
-	#start-button {
-		/* Specific styles if needed */
+	#start-button.solo {
+		grid-column: 1 / -1;
 	}
 
 	#surrender-button {

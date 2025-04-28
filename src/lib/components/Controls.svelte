@@ -18,7 +18,8 @@
 			numItems: 5,
 			flashTime: 1.5,
 			maxAttempts: 0,
-			allOrNothing: false
+			allOrNothing: false,
+			unordered: false
 		},
 		intermediate: {
 			rows: 6,
@@ -26,7 +27,8 @@
 			numItems: 7,
 			flashTime: 2,
 			maxAttempts: 0,
-			allOrNothing: false
+			allOrNothing: false,
+			unordered: false
 		},
 		expert: {
 			rows: 8,
@@ -34,7 +36,8 @@
 			numItems: 9,
 			flashTime: 2.2,
 			maxAttempts: 0,
-			allOrNothing: false
+			allOrNothing: false,
+			unordered: false
 		}
 	};
 
@@ -119,14 +122,15 @@
 			? `Custom ${Object.keys(customPresets).length + 1}`
 			: settings.selectedPreset;
 
-		const { rows, cols, numItems, flashTime, maxAttempts, allOrNothing } = settings;
+		const { rows, cols, numItems, flashTime, maxAttempts, allOrNothing, unordered } = settings;
 		const newPreset: PresetSettings = {
 			rows,
 			cols,
 			numItems,
 			flashTime,
 			maxAttempts,
-			allOrNothing
+			allOrNothing,
+			unordered
 		};
 
 		customPresets[presetName] = newPreset;
@@ -295,6 +299,18 @@
 					type="checkbox"
 					id="allOrNothing-checkbox"
 					bind:checked={settings.allOrNothing}
+					onchange={handleInputChange}
+					disabled={isGameActive}
+				/>
+			</label>
+		</div>
+		<div class="setting">
+			<label title="When checked, numbers can be clicked in any order" class="checkbox-label">
+				<span>Unordered Mode</span>
+				<input
+					type="checkbox"
+					id="unordered-checkbox"
+					bind:checked={settings.unordered}
 					onchange={handleInputChange}
 					disabled={isGameActive}
 				/>

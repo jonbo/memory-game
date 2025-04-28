@@ -14,7 +14,8 @@
 		numItems: 5,
 		flashTime: 1.5,
 		maxAttempts: 0, // 0 = unlimited
-		allOrNothing: false
+		allOrNothing: false,
+		unordered: false
 	});
 
 	let gameState = $state({
@@ -35,6 +36,10 @@
 
 	function getCell(row: number, col: number): CellState {
 		return gameState.cellsData[getCellIndex(row, col)];
+	}
+
+	function getSelectedCount(): number {
+		return gameState.cellsData.filter((c) => c.selected).length;
 	}
 
 	// --- Derived State ---
@@ -151,17 +156,23 @@
 
 		if (cell.number !== null) {
 			// Clicked on a cell with a number
-			if (cell.number === gameState.currentExpectedNumber) {
+			if (cell.number === gameState.currentExpectedNumber || settings.unordered) {
 				// Correct selection
 				cell.displayNumber = cell.number;
 				cell.state = 'correct';
 				cell.selected = true;
-				gameState.currentExpectedNumber++;
 
-				if (gameState.currentExpectedNumber - 1 === settings.numItems) {
-					endGame('won');
-				} else {
+				if (!settings.unordered) {
+					// if ordered
+					gameState.currentExpectedNumber++;
 					gameState.statusMessage = `Correct! Find number ${gameState.currentExpectedNumber}.`;
+				} else {
+					const remaining = settings.numItems - getSelectedCount();
+					gameState.statusMessage = remaining > 0 ? `Correct! Find ${remaining} more numbers.` : '';
+				}
+
+				if (getSelectedCount() === settings.numItems) {
+					endGame('won');
 				}
 			} else {
 				// Wrong number selection

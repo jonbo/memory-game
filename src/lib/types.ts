@@ -18,6 +18,7 @@ export interface GameSettings {
     flashTime: number;
     maxAttempts: number;
     allOrNothing: boolean;
+    unordered: boolean;
     selectedPreset: string;
 }
 

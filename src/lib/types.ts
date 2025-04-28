@@ -8,14 +8,7 @@ export interface CellState {
 	state: CellDisplayState;
 }
 
-export interface PresetSettings {
-	rows: number;
-	cols: number;
-	numItems: number;
-	flashTime: number;
-	maxAttempts: number; 
-	allOrNothing: boolean;	
-}
+export type PresetSettings = Omit<GameSettings, 'selectedPreset'>;
 
 export interface GameSettings {
     rows: number;

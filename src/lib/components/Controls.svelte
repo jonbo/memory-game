@@ -306,12 +306,12 @@
 <div class="controls main-controls">
 	<button
 		class={{
-			solo: !isGameActive
+			solo: gameStatus !== 'active'
 		}}
 		id="start-button"
 		onclick={onStartGame}>Start New Game</button
 	>
-	{#if isGameActive}
+	{#if gameStatus === 'active'}
 		<button id="surrender-button" onclick={onSurrender} class="surrender">Surrender</button>
 	{/if}
 </div>

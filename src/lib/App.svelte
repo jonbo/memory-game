@@ -101,7 +101,7 @@
 
 	function generateNumberPositions() {
 		const usedIndices = new Set<number>();
-		gameState.cellsData.forEach(cell => cell.number = null); // Reset all numbers
+		gameState.cellsData.forEach((cell) => (cell.number = null)); // Reset all numbers
 
 		for (let i = 1; i <= settings.numItems; i++) {
 			let index: number;
@@ -143,7 +143,7 @@
 		if (gameState.gameStatus !== 'active') return;
 
 		const cell = getCell(row, col);
-		
+
 		// Ignore clicks on already correctly selected cells or cells being processed
 		if (cell.selected || cell.state === 'wrong') {
 			return;
@@ -158,7 +158,7 @@
 				cell.selected = true;
 				gameState.currentExpectedNumber++;
 
-				if (gameState.cellsData.filter(c => c.selected).length === settings.numItems) {
+				if (gameState.cellsData.filter((c) => c.selected).length === settings.numItems) {
 					endGame('won');
 				} else {
 					gameState.statusMessage = `Correct! Find number ${gameState.currentExpectedNumber}.`;
@@ -215,7 +215,7 @@
 	}
 
 	function clearSelectionsForHardMode() {
-		gameState.cellsData.forEach(cell => {
+		gameState.cellsData.forEach((cell) => {
 			if (cell.selected) {
 				cell.selected = false;
 				cell.state = 'default';

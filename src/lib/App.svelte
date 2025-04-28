@@ -158,7 +158,7 @@
 				cell.selected = true;
 				gameState.currentExpectedNumber++;
 
-				if (gameState.cellsData.filter((c) => c.selected).length === settings.numItems) {
+				if (gameState.currentExpectedNumber - 1 === settings.numItems) {
 					endGame('won');
 				} else {
 					gameState.statusMessage = `Correct! Find number ${gameState.currentExpectedNumber}.`;

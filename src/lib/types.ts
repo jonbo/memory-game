@@ -13,8 +13,8 @@ export interface PresetSettings {
 	cols: number;
 	numItems: number;
 	flashTime: number;
-	// maxAttempts?: number; // Optional if presets don't define them
-	// easyMode?: boolean;
+	maxAttempts: number; 
+	allOrNothing: boolean;	
 }
 
 export interface GameSettings {

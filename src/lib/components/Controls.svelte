@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { slide } from 'svelte/transition';
 	import type { PresetSettings, GameStatus, GameSettings } from '$lib/types';
 
@@ -10,6 +11,33 @@
 		maxAttempts: { min: 0, max: 100 }
 	};
 
+	const presets: Record<string, PresetSettings> = {
+		beginner: {
+			rows: 4,
+			cols: 4,
+			numItems: 5,
+			flashTime: 1.2,
+			maxAttempts: 0,
+			allOrNothing: false
+		},
+		intermediate: {
+			rows: 6,
+			cols: 6,
+			numItems: 7,
+			flashTime: 1.5,
+			maxAttempts: 0,
+			allOrNothing: false
+		},
+		expert: {
+			rows: 8,
+			cols: 8,
+			numItems: 9,
+			flashTime: 2,
+			maxAttempts: 0,
+			allOrNothing: false
+		}
+	};
+
 	function clamp(value: number, min: number, max: number): number {
 		return Math.min(Math.max(value, min), max);
 	}
@@ -17,17 +45,13 @@
 	let {
 		settings = $bindable(),
 		gameStatus = 'initial',
-		presets,
 		onSettingsChange,
-		onPresetChange,
 		onStartGame,
 		onSurrender
 	} = $props<{
 		settings: GameSettings;
 		gameStatus?: GameStatus;
-		presets: Record<string, PresetSettings>;
 		onSettingsChange: (settings: GameSettings) => void;
-		onPresetChange: (presetName: string) => void;
 		onStartGame: () => void;
 		onSurrender: () => void;
 	}>();
@@ -59,9 +83,22 @@
 		onSettingsChange(settings);
 	}
 
+	function applyPreset(presetName: string) {
+		const preset = presets[presetName];
+		if (!preset) {
+			return;
+		}
+		settings = { ...preset, selectedPreset: presetName };
+		onSettingsChange(settings);
+	}
+	// Ensure the selected preset is applied
+	applyPreset(settings.selectedPreset);
+
 	function handlePresetChange(event: Event) {
 		const target = event.target as HTMLSelectElement;
-		onPresetChange(target.value);
+		const presetName = target.value;
+
+		applyPreset(presetName);
 	}
 </script>
 

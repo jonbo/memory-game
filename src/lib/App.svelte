@@ -3,13 +3,7 @@
 	import Controls from './components/Controls.svelte';
 	import Stats from './components/Stats.svelte';
 	import Grid from './components/Grid.svelte';
-	import type {
-		CellState,
-		PresetSettings,
-		CellDisplayState,
-		GameStatus,
-		GameSettings
-	} from './types';
+	import type { CellState, CellDisplayState, GameStatus, GameSettings } from './types';
 
 	// --- Game Settings & State ---
 	let settings = $state<GameSettings>({
@@ -34,15 +28,6 @@
 		numberPositions: new Map<string, number>(), // "row-col" -> number
 		selectedIndices: new Set<number>() // Indices of correctly selected cells
 	});
-
-	const presets: Record<string, PresetSettings> = {
-		beginner: { rows: 4, cols: 4, numItems: 5, flashTime: 1.2 },
-		hard: { rows: 6, cols: 6, numItems: 7, flashTime: 1.4 },
-		advanced: { rows: 8, cols: 8, numItems: 9, flashTime: 1.6 }
-	};
-
-	// Apply initial preset
-	applyPreset(settings.selectedPreset);
 
 	// --- Derived State ---
 	const totalCells = $derived(settings.rows * settings.cols);
@@ -83,20 +68,7 @@
 		gameState.gameStatus = 'initial';
 	}
 
-	function applyPreset(presetName: string) {
-		gameState.gameStatus = 'initial'; // Reset game status on preset change
-
-		settings.selectedPreset = presetName;
-		if (presetName !== 'custom') {
-			const preset = presets[presetName];
-			if (preset) {
-				Object.assign(settings, preset); // Apply preset settings
-			}
-		}
-		// No need to call initializeGridState here, $effect handles it
-	}
-
-	function handleSettingsChange(newSettings: GameSettings) {
+	function handleSettingsChange(settings: GameSettings) {
 		gameState.gameStatus = 'initial'; // Reset game status on settings change
 	}
 
@@ -304,9 +276,7 @@
 	<Controls
 		bind:settings
 		gameStatus={gameState.gameStatus}
-		{presets}
 		onSettingsChange={handleSettingsChange}
-		onPresetChange={applyPreset}
 		onStartGame={startGame}
 		{onSurrender}
 	/>

@@ -219,7 +219,7 @@
 				onchange={handlePresetChange}
 				disabled={isGameActive}
 			>
-				<option value="custom">Custom{hasUnsavedChanges ? '*' : ''}</option>
+				<option disabled value="custom">Custom{hasUnsavedChanges ? '*' : ''}</option>
 				{#each Object.keys(presets) as presetName}
 					<option value={presetName}
 						>{presetName.charAt(0).toUpperCase() + presetName.slice(1)}</option

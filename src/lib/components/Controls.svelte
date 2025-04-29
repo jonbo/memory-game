@@ -128,7 +128,9 @@
 		if (!preset) {
 			return;
 		}
-		settings = { ...preset, selectedPreset: presetName };
+
+		Object.assign(settings, preset);
+		settings.selectedPreset = presetName;
 		onSettingsChange(settings);
 	}
 	// Ensure the selected preset is applied

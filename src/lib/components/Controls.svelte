@@ -61,10 +61,31 @@
 
 	const isGameActive = $derived(gameStatus === 'active' || gameStatus === 'flashing');
 	let showSettings = $state(false); // Control settings visibility
-	let hasUnsavedChanges = $state(false); // Track unsaved changes
 
 	const CUSTOM_PRESET_KEY = 'customPresets';
-	let customPresets = $state(JSON.parse(localStorage.getItem(CUSTOM_PRESET_KEY) ?? '{}'));
+	let customPresets: Record<string, PresetSettings> = $state(
+		JSON.parse(localStorage.getItem(CUSTOM_PRESET_KEY) ?? '{}')
+	);
+
+	function areSettingsEqual(settingsA: GameSettings, settingsB?: PresetSettings): boolean {
+		if (!settingsB) return false;
+		const keys: (keyof PresetSettings)[] = [
+			'rows',
+			'cols',
+			'numItems',
+			'flashTime',
+			'maxAttempts',
+			'allOrNothing',
+			'unordered'
+		];
+		return keys.every((key) => settingsA[key] === settingsB[key]);
+	}
+
+	const hasUnsavedChanges = $derived(
+		settings.selectedPreset === 'custom' ||
+			(settings.selectedPreset in customPresets &&
+				!areSettingsEqual(settings, customPresets[settings.selectedPreset]))
+	);
 
 	function handleInputChange() {
 		settings.rows = clamp(settings.rows, metaSettings.rows.min, metaSettings.rows.max);
@@ -91,10 +112,6 @@
 			settings.selectedPreset = 'custom'; // Set to custom when user changes settings
 		}
 
-		if (settings.selectedPreset === 'custom' || settings.selectedPreset in customPresets) {
-			hasUnsavedChanges = true;
-		}
-
 		onSettingsChange(settings);
 	}
 
@@ -104,7 +121,6 @@
 			return;
 		}
 		settings = { ...preset, selectedPreset: presetName };
-		hasUnsavedChanges = false;
 		onSettingsChange(settings);
 	}
 	// Ensure the selected preset is applied
@@ -136,7 +152,6 @@
 		customPresets[presetName] = newPreset;
 		localStorage.setItem(CUSTOM_PRESET_KEY, JSON.stringify(customPresets));
 		settings.selectedPreset = presetName;
-		hasUnsavedChanges = false;
 	}
 
 	function renameCustomPreset(oldName: string) {

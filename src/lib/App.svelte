@@ -84,7 +84,7 @@
 		gameState.gameStatus = 'initial'; // Reset game status on settings change
 	}
 
-	function startGame() {
+	async function startGame() {
 		// Ensure numItems is valid before starting
 		if (settings.numItems > totalCells) {
 			gameState.statusMessage = `Cannot start: Number of items (${settings.numItems}) exceeds grid size (${totalCells}).`;
@@ -98,10 +98,10 @@
 		gameState.statusMessage = 'Generating board...';
 
 		// Use tick to ensure UI updates before potentially blocking generation
-		tick().then(() => {
-			generateNumberPositions();
-			flashNumbers();
-		});
+		await tick();
+		generateNumberPositions();
+		await flashNumbers();
+		handleReady();
 	}
 
 	function generateNumberPositions() {
@@ -119,7 +119,11 @@
 		}
 	}
 
-	function flashNumbers() {
+	function delay(ms: number): Promise<void> {
+		return new Promise((resolve) => setTimeout(resolve, ms));
+	}
+
+	async function flashNumbers() {
 		gameState.statusMessage = 'Remember the positions...';
 
 		// Show numbers
@@ -130,18 +134,21 @@
 			}
 		});
 
-		// Hide numbers after flashTime
-		setTimeout(() => {
-			gameState.cellsData.forEach((cell) => {
-				if (cell.state === 'flash') {
-					cell.displayNumber = null;
-					cell.state = 'default';
-				}
-			});
-			gameState.gameStatus = 'active';
-			gameState.statusMessage = `Click cells in order: 1 to ${settings.numItems}`;
-			startTimer();
-		}, settings.flashTime * 1000);
+		await delay(settings.flashTime * 1000); // Wait for flashTime
+	}
+
+	function handleReady() {
+		if (gameState.gameStatus !== 'flashing') return; // Ignore if not in flashing state
+
+		gameState.cellsData.forEach((cell) => {
+			if (cell.state === 'flash') {
+				cell.displayNumber = null;
+				cell.state = 'default';
+			}
+		});
+		gameState.gameStatus = 'active';
+		gameState.statusMessage = `Click cells in order: 1 to ${settings.numItems}`;
+		startTimer();
 	}
 
 	function handleCellClick(row: number, col: number) {
@@ -290,6 +297,7 @@
 		gameStatus={gameState.gameStatus}
 		onSettingsChange={handleSettingsChange}
 		onStartGame={startGame}
+		onForceReady={handleReady}
 		{onSurrender}
 	/>
 

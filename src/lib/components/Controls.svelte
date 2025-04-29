@@ -7,7 +7,7 @@
 		rows: { min: 2, max: 12 },
 		cols: { min: 2, max: 12 },
 		numItems: { min: 1, max: 20 },
-		flashTime: { min: 0.1, max: 5, step: 0.1 },
+		flashTime: { min: 0.1, max: 30, step: 0.1 },
 		maxAttempts: { min: 0, max: 100 }
 	};
 
@@ -50,13 +50,15 @@
 		gameStatus = 'initial',
 		onSettingsChange,
 		onStartGame,
-		onSurrender
+		onSurrender,
+		onForceReady
 	} = $props<{
 		settings: GameSettings;
 		gameStatus?: GameStatus;
 		onSettingsChange: (settings: GameSettings) => void;
 		onStartGame: () => void;
 		onSurrender: () => void;
+		onForceReady: () => void;
 	}>();
 
 	const isGameActive = $derived(gameStatus === 'active' || gameStatus === 'flashing');
@@ -347,12 +349,17 @@
 <div class="controls main-controls">
 	<button
 		class={{
-			solo: gameStatus !== 'active'
+			solo: gameStatus !== 'active' && gameStatus !== 'flashing'
 		}}
 		id="start-button"
-		onclick={onStartGame}>Start New Game</button
+		onclick={onStartGame}
+		disabled={gameStatus === 'flashing'}
 	>
-	{#if gameStatus === 'active'}
+		Start New Game
+	</button>
+	{#if gameStatus === 'flashing'}
+		<button id="ready-button" onclick={onForceReady} class="ready">Ready!</button>
+	{:else if gameStatus === 'active'}
 		<button id="surrender-button" onclick={onSurrender} class="surrender">Surrender</button>
 	{/if}
 </div>

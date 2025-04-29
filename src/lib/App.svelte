@@ -26,7 +26,8 @@
 		gameTime: 0, // seconds
 		timerInterval: null as ReturnType<typeof setInterval> | null,
 		startTime: 0,
-		cellsData: [] as CellState[]
+		cellsData: [] as CellState[],
+		readyAutoStartTime: 0 // The time when the game should start automatically by (after flashing)
 	});
 
 	// --- Helper Functions ---
@@ -100,6 +101,8 @@
 		// Use tick to ensure UI updates before potentially blocking generation
 		await tick();
 		generateNumberPositions();
+
+		gameState.readyAutoStartTime = Date.now() + settings.flashTime * 1000;
 		await flashNumbers();
 		handleReady();
 	}
@@ -298,6 +301,7 @@
 		onSettingsChange={handleSettingsChange}
 		onStartGame={startGame}
 		onForceReady={handleReady}
+		readyAutoStartTime={gameState.readyAutoStartTime}
 		{onSurrender}
 	/>
 

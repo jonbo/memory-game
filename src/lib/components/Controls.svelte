@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { untrack } from 'svelte';
 	import { slide } from 'svelte/transition';
 	import type { PresetSettings, GameStatus, GameSettings } from '$lib/types';
 
@@ -51,7 +51,8 @@
 		onSettingsChange,
 		onStartGame,
 		onSurrender,
-		onForceReady
+		onForceReady,
+		readyAutoStartTime
 	} = $props<{
 		settings: GameSettings;
 		gameStatus?: GameStatus;
@@ -59,6 +60,7 @@
 		onStartGame: () => void;
 		onSurrender: () => void;
 		onForceReady: () => void;
+		readyAutoStartTime: number;
 	}>();
 
 	const isGameActive = $derived(gameStatus === 'active' || gameStatus === 'flashing');
@@ -68,6 +70,21 @@
 	let customPresets: Record<string, PresetSettings> = $state(
 		JSON.parse(localStorage.getItem(CUSTOM_PRESET_KEY) ?? '{}')
 	);
+
+	let currentTime = $state(Date.now());
+	const timeUntilStart = $derived(readyAutoStartTime - currentTime);
+	function trackTime() {
+		currentTime = Date.now();
+		if (currentTime >= readyAutoStartTime) {
+			return;
+		}
+		setTimeout(trackTime, 50); // Since we're only roughly tracking the time (1.5s)
+	}
+	// When the game starts, start a countdown
+	$effect(() => {
+		readyAutoStartTime; // dependency
+		untrack(() => trackTime());
+	});
 
 	function areSettingsEqual(settingsA: GameSettings, settingsB?: PresetSettings): boolean {
 		if (!settingsB) return false;
@@ -358,7 +375,9 @@
 		Start New Game
 	</button>
 	{#if gameStatus === 'flashing'}
-		<button id="ready-button" onclick={onForceReady} class="ready">Ready!</button>
+		<button id="ready-button" onclick={onForceReady} class="ready"
+			>Ready! ({(timeUntilStart / 1000).toFixed(1)}s)</button
+		>
 	{:else if gameStatus === 'active'}
 		<button id="surrender-button" onclick={onSurrender} class="surrender">Surrender</button>
 	{/if}

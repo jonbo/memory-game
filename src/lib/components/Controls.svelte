@@ -239,7 +239,7 @@
 				class="icon-button"
 				onclick={saveCustomPreset}
 				disabled={isGameActive}
-				title="Save as custom preset"
+				title={settings.selectedPreset in customPresets ? 'Save Preset' : 'Save as custom preset'}
 			>
 				💾
 			</button>

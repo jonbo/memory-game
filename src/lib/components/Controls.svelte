@@ -81,6 +81,14 @@
 		return keys.every((key) => settingsA[key] === settingsB[key]);
 	}
 
+	function hasSettingChanged(key: keyof PresetSettings): boolean {
+		const preset =
+			settings.selectedPreset === 'custom'
+				? undefined
+				: presets[settings.selectedPreset] || customPresets[settings.selectedPreset];
+		return preset ? settings[key] !== preset[key] : false;
+	}
+
 	const hasUnsavedChanges = $derived(
 		settings.selectedPreset === 'custom' ||
 			(settings.selectedPreset in customPresets &&
@@ -246,7 +254,7 @@
 
 {#if showSettings}
 	<div class="controls" transition:slide>
-		<div class="setting">
+		<div class="setting" class:changed={hasSettingChanged('rows')}>
 			<label>
 				<span>Rows</span>
 				<input
@@ -258,7 +266,7 @@
 				/>
 			</label>
 		</div>
-		<div class="setting">
+		<div class="setting" class:changed={hasSettingChanged('cols')}>
 			<label>
 				<span>Columns</span>
 				<input
@@ -270,7 +278,7 @@
 				/>
 			</label>
 		</div>
-		<div class="setting">
+		<div class="setting" class:changed={hasSettingChanged('numItems')}>
 			<label>
 				<span>Number of items</span>
 				<input
@@ -282,7 +290,7 @@
 				/>
 			</label>
 		</div>
-		<div class="setting">
+		<div class="setting" class:changed={hasSettingChanged('flashTime')}>
 			<label>
 				<span>Flash time (s)</span>
 				<input
@@ -295,7 +303,7 @@
 				/>
 			</label>
 		</div>
-		<div class="setting">
+		<div class="setting" class:changed={hasSettingChanged('maxAttempts')}>
 			<label title="(0 = unlimited)">
 				<span>Max attempts</span>
 				<input
@@ -307,7 +315,7 @@
 				/>
 			</label>
 		</div>
-		<div class="setting">
+		<div class="setting" class:changed={hasSettingChanged('allOrNothing')}>
 			<label title="When checked, resets all selections on a mistake" class="checkbox-label">
 				<span>All Or Nothing</span>
 				<input
@@ -319,7 +327,7 @@
 				/>
 			</label>
 		</div>
-		<div class="setting">
+		<div class="setting" class:changed={hasSettingChanged('unordered')}>
 			<label title="When checked, numbers can be clicked in any order" class="checkbox-label">
 				<span>Unordered Mode</span>
 				<input
@@ -541,5 +549,9 @@
 	}
 	.checkbox-label input[type='checkbox']:disabled + span {
 		color: #999; /* Grey out text for disabled checkbox */
+	}
+
+	.changed {
+		background-color: #fffce3 !important;
 	}
 </style>

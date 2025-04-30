@@ -72,19 +72,10 @@
 	);
 
 	let currentTime = $state(Date.now());
-	const timeUntilStart = $derived(readyAutoStartTime - currentTime);
-	function trackTime() {
+	setInterval(() => {
 		currentTime = Date.now();
-		if (currentTime >= readyAutoStartTime) {
-			return;
-		}
-		setTimeout(trackTime, 50); // Since we're only roughly tracking the time (1.5s)
-	}
-	// When the game starts, start a countdown
-	$effect(() => {
-		readyAutoStartTime; // dependency
-		untrack(() => trackTime());
-	});
+	}, 50); // Since we're only roughly tracking the time (0.1s)
+	const timeUntilStart = $derived(readyAutoStartTime - currentTime);
 
 	function areSettingsEqual(settingsA: GameSettings, settingsB?: PresetSettings): boolean {
 		if (!settingsB) return false;

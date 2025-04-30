@@ -5,11 +5,11 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 const config = {
 	kit: {
 		adapter: adapter({
-			fallback: '404.html'
+			fallback: '404.html',
 		}),
 		paths: {
 			base: '/memory-game'
-		}
+		},
 	}
 };
 

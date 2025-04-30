@@ -1,38 +1,41 @@
-# sv
+# Memory Board Game
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+A challenging cognitive exercise where you memorize and reproduce number sequences on a grid. Built with Svelte 5.
 
-## Creating a project
 
-If you're seeing this, you've probably already done this step. Congrats!
+## How to Play
+
+1. Choose a difficulty preset or customize your settings
+2. Press "Start New Game"
+3. Memorize the numbers that flash on the grid
+4. Click the cells in ascending order (1, 2, 3...)
+5. Complete the sequence before running out of attempts!
+
+## Game Modes
+
+- **Normal Mode:** Mistakes allowed, continue from your last correct number
+- **All or Nothing:** One mistake resets all your progress
+- **Unordered Mode:** Click the numbers in any order
+
+## Features
+* Adjustable settings
+* Built-in presets (Beginner, Intermediate, Expert)
+* Custom preset creation and management
+
+## Quick Start
+
+Install dependencies and start the development server:
 
 ```bash
-# create a new project in the current directory
-npx sv create
-
-# create a new project in my-app
-npx sv create my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
+npm install
 npm run dev -- --open
 ```
 
-## Building
+## Build
 
-To create a production version of your app:
+Create a production version:
 
 ```bash
 npm run build
+npm run preview
 ```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.

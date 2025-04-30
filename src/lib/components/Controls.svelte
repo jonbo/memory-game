@@ -487,6 +487,17 @@
 		outline: none;
 	}
 
+	input[type='number'] {
+		text-align: right;
+	}
+	input[type='number']::-webkit-inner-spin-button {
+		opacity: 1;
+		margin-left: 5px;
+	}
+	input[type='checkbox'] {
+		margin: 6px;
+	}
+
 	.controls label:focus-within {
 		border-color: #4caf50;
 		box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);

@@ -2,6 +2,8 @@
 
 A challenging cognitive exercise where you memorize and reproduce number sequences on a grid. Built with Svelte 5.
 
+[Play it here!](https://jonbo.github.io/memory-game/)
+
 
 ## How to Play
 

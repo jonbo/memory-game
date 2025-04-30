@@ -2,6 +2,7 @@
 	import { untrack } from 'svelte';
 	import { slide } from 'svelte/transition';
 	import type { PresetSettings, GameStatus, GameSettings } from '$lib/types';
+	import NumberInput from './inputs/NumberInput.svelte';
 
 	const metaSettings = {
 		rows: { min: 2, max: 12 },
@@ -266,66 +267,56 @@
 
 {#if showSettings}
 	<div class="controls" transition:slide>
-		<div class="setting" class:changed={hasSettingChanged('rows')}>
-			<label>
-				<span>Rows</span>
-				<input
-					type="number"
-					id="rows-input"
-					bind:value={settings.rows}
-					oninput={handleInputChange}
-					disabled={isGameActive}
-				/>
-			</label>
+		<div class:changed={hasSettingChanged('rows')}>
+			<NumberInput
+				bind:value={settings.rows}
+				label="Rows"
+				min={metaSettings.rows.min}
+				max={metaSettings.rows.max}
+				disabled={isGameActive}
+				onNumberChange={handleInputChange}
+			/>
 		</div>
-		<div class="setting" class:changed={hasSettingChanged('cols')}>
-			<label>
-				<span>Columns</span>
-				<input
-					type="number"
-					id="cols-input"
-					bind:value={settings.cols}
-					oninput={handleInputChange}
-					disabled={isGameActive}
-				/>
-			</label>
+		<div class:changed={hasSettingChanged('cols')}>
+			<NumberInput
+				bind:value={settings.cols}
+				label="Columns"
+				min={metaSettings.cols.min}
+				max={Math.min(settings.rows * settings.cols, metaSettings.cols.max)}
+				disabled={isGameActive}
+				onNumberChange={handleInputChange}
+			/>
 		</div>
-		<div class="setting" class:changed={hasSettingChanged('numItems')}>
-			<label>
-				<span>Number of items</span>
-				<input
-					type="number"
-					id="numItems-input"
-					bind:value={settings.numItems}
-					oninput={handleInputChange}
-					disabled={isGameActive}
-				/>
-			</label>
+		<div class:changed={hasSettingChanged('numItems')}>
+			<NumberInput
+				bind:value={settings.numItems}
+				label="Number of items"
+				min={metaSettings.numItems.min}
+				max={metaSettings.numItems.max}
+				disabled={isGameActive}
+				onNumberChange={handleInputChange}
+			/>
 		</div>
-		<div class="setting" class:changed={hasSettingChanged('flashTime')}>
-			<label>
-				<span>Flash time (s)</span>
-				<input
-					type="number"
-					id="flashTime-input"
-					step={metaSettings.flashTime.step}
-					bind:value={settings.flashTime}
-					oninput={handleInputChange}
-					disabled={isGameActive}
-				/>
-			</label>
+		<div class:changed={hasSettingChanged('flashTime')}>
+			<NumberInput
+				bind:value={settings.flashTime}
+				label="Flash time (s)"
+				min={metaSettings.flashTime.min}
+				max={metaSettings.flashTime.max}
+				step={metaSettings.flashTime.step}
+				disabled={isGameActive}
+				onNumberChange={handleInputChange}
+			/>
 		</div>
-		<div class="setting" class:changed={hasSettingChanged('maxAttempts')}>
-			<label title="(0 = unlimited)">
-				<span>Max attempts</span>
-				<input
-					type="number"
-					id="maxAttempts-input"
-					bind:value={settings.maxAttempts}
-					oninput={handleInputChange}
-					disabled={isGameActive}
-				/>
-			</label>
+		<div class:changed={hasSettingChanged('maxAttempts')}>
+			<NumberInput
+				bind:value={settings.maxAttempts}
+				label="Max attempts"
+				min={metaSettings.maxAttempts.min}
+				max={metaSettings.maxAttempts.max}
+				disabled={isGameActive}
+				onNumberChange={handleInputChange}
+			/>
 		</div>
 		<div class="setting" class:changed={hasSettingChanged('allOrNothing')}>
 			<label title="When checked, resets all selections on a mistake" class="checkbox-label">
@@ -454,7 +445,6 @@
 	}
 
 	select,
-	input[type='number'],
 	button {
 		padding: 10px 15px; /* Further increased padding */
 		border-radius: 5px;
@@ -465,8 +455,7 @@
 			box-shadow 0.2s; /* Add transitions */
 	}
 
-	select,
-	input[type='number'] {
+	select {
 		padding: 5px;
 		border: none;
 		font-size: 14px;
@@ -474,26 +463,17 @@
 		background: transparent;
 	}
 
-	select:focus,
-	input[type='number']:focus {
+	select:focus {
 		border-color: #4caf50; /* Highlight focus */
 		box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2); /* Focus ring */
 		outline: none;
 	}
 
-	select:focus,
-	input[type='number']:focus {
+	select:focus {
 		box-shadow: none;
 		outline: none;
 	}
 
-	input[type='number'] {
-		text-align: right;
-	}
-	input[type='number']::-webkit-inner-spin-button {
-		opacity: 1;
-		margin-left: 5px;
-	}
 	input[type='checkbox'] {
 		margin: 6px;
 	}
@@ -509,10 +489,6 @@
 		align-items: center;
 		padding: 10px;
 		background: #f7f7f7;
-	}
-
-	input[type='number'] {
-		width: 65px; /* Slightly wider */
 	}
 
 	button {
@@ -570,7 +546,6 @@
 	}
 
 	/* Style for disabled inputs */
-	input:disabled,
 	select:disabled,
 	button:disabled {
 		background-color: #e0e0e0;

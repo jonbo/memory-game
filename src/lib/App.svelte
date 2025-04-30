@@ -293,7 +293,10 @@
 </script>
 
 <main>
-	<h1>Memory Board Game</h1>
+	<div class="header">
+		<img src="icon.png" alt="Memory Game Icon" />
+		<h1>Memory Board Game</h1>
+	</div>
 
 	<Controls
 		bind:settings
@@ -334,9 +337,15 @@
 		margin: 0 auto; /* Center the app */
 	}
 
-	h1 {
-		color: #333;
-		margin-bottom: 20px;
+	.header {
+		display: flex;
+		align-items: center;
+		gap: 0.5em;
+	}
+
+	.header img {
+		height: 2.2em;
+		width: auto;
 	}
 
 	/* Add other global styles if needed */

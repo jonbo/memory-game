@@ -3,7 +3,6 @@
 
 	let {
 		value = $bindable(0),
-		label,
 		min,
 		max,
 		step,
@@ -11,7 +10,6 @@
 		onNumberChange = () => {}
 	} = $props<{
 		value: number;
-		label: string;
 		min?: number;
 		max?: number;
 		step?: number;
@@ -46,45 +44,13 @@
 	}
 </script>
 
-<div class="setting">
-	<label>
-		<span>{label}</span>
-		<div class="number-input">
-			<button {disabled} onclick={decrement} class="step-btn" type="button">-</button>
-			<input type="number" {value} {min} {max} {step} {disabled} onchange={handleInput} />
-			<button {disabled} onclick={increment} class="step-btn" type="button">+</button>
-		</div>
-	</label>
+<div class="number-input">
+	<button {disabled} onclick={decrement} class="step-btn" type="button">-</button>
+	<input type="number" {value} {min} {max} {step} {disabled} onchange={handleInput} />
+	<button {disabled} onclick={increment} class="step-btn" type="button">+</button>
 </div>
 
 <style>
-	.setting {
-		width: 100%;
-		color: #333;
-		background-color: #fff;
-		border: 1px solid #ccc;
-		border-radius: 5px;
-		padding-right: 5px;
-		overflow: hidden;
-	}
-
-	.setting label {
-		display: flex;
-		align-items: center;
-		width: 100%;
-		height: 100%;
-		justify-content: space-between;
-	}
-
-	.setting span {
-		border-right: 1px solid #ccc;
-		display: inline-flex;
-		height: 100%;
-		align-items: center;
-		padding: 10px;
-		background: #f7f7f7;
-	}
-
 	.number-input {
 		display: flex;
 		align-items: center;
@@ -130,10 +96,5 @@
 	input:disabled {
 		background-color: #f5f5f5;
 		cursor: not-allowed;
-	}
-
-	label:focus-within {
-		border-color: #4caf50;
-		box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
 	}
 </style>

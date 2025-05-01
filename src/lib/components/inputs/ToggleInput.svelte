@@ -1,55 +1,21 @@
 <script lang="ts">
 	let {
 		checked = $bindable(false),
-		label,
 		disabled,
 		onchange = () => {}
 	} = $props<{
 		checked: boolean;
-		label: string;
 		disabled?: boolean;
 		onchange: (checked: boolean) => void;
 	}>();
 </script>
 
-<div class="setting">
-	<label title={label} class="toggle-label">
-		<span>{label}</span>
-		<div class="toggle">
-			<input type="checkbox" {onchange} bind:checked {disabled} />
-			<span class="slider"></span>
-		</div>
-	</label>
+<div class="toggle">
+	<input type="checkbox" {onchange} bind:checked {disabled} />
+	<span class="slider"></span>
 </div>
 
 <style>
-	.setting {
-		width: 100%;
-		color: #333;
-		background-color: #fff;
-		border: 1px solid #ccc;
-		border-radius: 5px;
-		padding-right: 5px;
-		overflow: hidden;
-	}
-
-	.toggle-label {
-		display: flex;
-		align-items: center;
-		width: 100%;
-		height: 100%;
-		justify-content: space-between;
-	}
-
-	.toggle-label span {
-		border-right: 1px solid #ccc;
-		display: inline-flex;
-		height: 100%;
-		align-items: center;
-		padding: 10px;
-		background: #f7f7f7;
-	}
-
 	.toggle {
 		--toggle-width: 100px;
 		--toggle-height: 26px;
@@ -63,7 +29,6 @@
 		display: inline-block;
 		width: var(--toggle-width);
 		height: var(--toggle-height);
-
 		margin: 0 10px;
 	}
 

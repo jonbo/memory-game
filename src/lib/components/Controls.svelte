@@ -4,6 +4,7 @@
 	import type { PresetSettings, GameStatus, GameSettings } from '$lib/types';
 	import NumberInput from './inputs/NumberInput.svelte';
 	import ToggleInput from './inputs/ToggleInput.svelte';
+	import SettingInput from './inputs/SettingInput.svelte';
 
 	const metaSettings = {
 		rows: { min: 2, max: 12 },
@@ -268,73 +269,66 @@
 
 {#if showSettings}
 	<div class="controls" transition:slide>
-		<div class:changed={hasSettingChanged('rows')}>
+		<SettingInput label="Rows" changed={hasSettingChanged('rows')}>
 			<NumberInput
 				bind:value={settings.rows}
-				label="Rows"
 				min={metaSettings.rows.min}
 				max={metaSettings.rows.max}
 				disabled={isGameActive}
 				onNumberChange={handleInputChange}
 			/>
-		</div>
-		<div class:changed={hasSettingChanged('cols')}>
+		</SettingInput>
+		<SettingInput label="Columns" changed={hasSettingChanged('cols')}>
 			<NumberInput
 				bind:value={settings.cols}
-				label="Columns"
 				min={metaSettings.cols.min}
 				max={Math.min(settings.rows * settings.cols, metaSettings.cols.max)}
 				disabled={isGameActive}
 				onNumberChange={handleInputChange}
 			/>
-		</div>
-		<div class:changed={hasSettingChanged('numItems')}>
+		</SettingInput>
+		<SettingInput label="Number of items" changed={hasSettingChanged('numItems')}>
 			<NumberInput
 				bind:value={settings.numItems}
-				label="Number of items"
 				min={metaSettings.numItems.min}
 				max={metaSettings.numItems.max}
 				disabled={isGameActive}
 				onNumberChange={handleInputChange}
 			/>
-		</div>
-		<div class:changed={hasSettingChanged('flashTime')}>
+		</SettingInput>
+		<SettingInput label="Flash time (s)" changed={hasSettingChanged('flashTime')}>
 			<NumberInput
 				bind:value={settings.flashTime}
-				label="Flash time (s)"
 				min={metaSettings.flashTime.min}
 				max={metaSettings.flashTime.max}
 				step={metaSettings.flashTime.step}
 				disabled={isGameActive}
 				onNumberChange={handleInputChange}
 			/>
-		</div>
-		<div class:changed={hasSettingChanged('maxAttempts')}>
+		</SettingInput>
+		<SettingInput label="Max attempts" changed={hasSettingChanged('maxAttempts')}>
 			<NumberInput
 				bind:value={settings.maxAttempts}
-				label="Max attempts"
 				min={metaSettings.maxAttempts.min}
 				max={metaSettings.maxAttempts.max}
 				disabled={isGameActive}
 				onNumberChange={handleInputChange}
 			/>
-		</div>
-		<div class:changed={hasSettingChanged('allOrNothing')}>
+		</SettingInput>
+		<SettingInput label="All Or Nothing" changed={hasSettingChanged('allOrNothing')}>
 			<ToggleInput
 				bind:checked={settings.allOrNothing}
-				label="All Or Nothing"
 				disabled={isGameActive}
 				onchange={handleInputChange}
 			/>
-		</div>
-		<div class:changed={hasSettingChanged('unordered')}>
+		</SettingInput>
+		<SettingInput label="Unordered Mode" changed={hasSettingChanged('unordered')}>
 			<ToggleInput
 				bind:checked={settings.unordered}
-				label="Unordered Mode"
 				disabled={isGameActive}
 				onchange={handleInputChange}
 			/>
-		</div>
+		</SettingInput>
 	</div>
 {/if}
 
@@ -419,24 +413,6 @@
 		}
 	}
 
-	.setting {
-		width: 100%;
-		color: #333;
-		background-color: #fff;
-		border: 1px solid #ccc;
-		border-radius: 5px;
-		padding-right: 5px;
-		overflow: hidden;
-	}
-
-	.setting label {
-		display: flex;
-		align-items: center;
-		width: 100%;
-		height: 100%;
-		justify-content: space-between;
-	}
-
 	select,
 	button {
 		padding: 10px 15px; /* Further increased padding */
@@ -465,23 +441,6 @@
 	select:focus {
 		box-shadow: none;
 		outline: none;
-	}
-
-	input[type='checkbox'] {
-		margin: 6px;
-	}
-
-	.controls label:focus-within {
-		border-color: #4caf50;
-		box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
-	}
-	.controls span {
-		border-right: 1px solid #ccc;
-		display: inline-flex;
-		height: 100%;
-		align-items: center;
-		padding: 10px;
-		background: #f7f7f7;
 	}
 
 	button {
@@ -544,12 +503,5 @@
 		background-color: #e0e0e0;
 		cursor: not-allowed;
 		opacity: 0.7;
-	}
-	.checkbox-label input[type='checkbox']:disabled + span {
-		color: #999; /* Grey out text for disabled checkbox */
-	}
-
-	.changed {
-		background-color: #fffce3 !important;
 	}
 </style>

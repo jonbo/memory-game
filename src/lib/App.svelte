@@ -20,7 +20,7 @@
 
 	let gameState = $state({
 		gameStatus: 'initial' as GameStatus,
-		statusMessage: 'Change any settings and press "Start New Game"',
+		statusMessage: 'Change any settings or press "Start New Game"',
 		attempts: 0,
 		currentExpectedNumber: 1,
 		gameTime: 0, // seconds

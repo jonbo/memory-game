@@ -51,18 +51,6 @@
 	// --- Derived State ---
 	const totalCells = $derived(settings.rows * settings.cols);
 
-	$effect(() => {
-		// Cleanup timer on component unmount or when game ends
-		const currentTimer = gameState.timerInterval;
-		const isActive = gameState.gameStatus === 'active' || gameState.gameStatus === 'flashing';
-		return () => {
-			if (!isActive && currentTimer) {
-				clearInterval(currentTimer);
-				gameState.timerInterval = null;
-			}
-		};
-	});
-
 	// --- Functions ---
 
 	function initializeGridState() {
@@ -99,7 +87,6 @@
 			return;
 		}
 
-		stopTimer();
 		initializeGridState(); // Reset grid state completely
 		gameState.gameStatus = 'flashing';
 		gameState.statusMessage = 'Generating board...';

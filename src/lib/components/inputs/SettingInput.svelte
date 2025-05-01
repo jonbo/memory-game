@@ -5,13 +5,14 @@
 		label: string;
 		children: Snippet;
 		changed: boolean;
+		tooltip?: string;
 	}
 
-	let { label, children, changed = false }: Props = $props();
+	let { label, children, changed = false, tooltip = '' }: Props = $props();
 </script>
 
 <div class="setting" class:changed>
-	<label>
+	<label title={tooltip}>
 		<span>{label}</span>
 		<div class="input-container">
 			{@render children()}

@@ -271,7 +271,11 @@
 
 {#if showSettings}
 	<div class="controls" transition:slide>
-		<SettingInput label="Rows" changed={hasSettingChanged('rows')}>
+		<SettingInput
+			label="Rows"
+			changed={hasSettingChanged('rows')}
+			tooltip={`Number of rows in the game grid (${metaSettings.rows.min}-${metaSettings.rows.max})`}
+		>
 			<NumberInput
 				bind:value={settings.rows}
 				min={metaSettings.rows.min}
@@ -280,7 +284,11 @@
 				onNumberChange={handleInputChange}
 			/>
 		</SettingInput>
-		<SettingInput label="Columns" changed={hasSettingChanged('cols')}>
+		<SettingInput
+			label="Columns"
+			changed={hasSettingChanged('cols')}
+			tooltip={`Number of columns in the game grid (${metaSettings.cols.min}-${metaSettings.cols.max})`}
+		>
 			<NumberInput
 				bind:value={settings.cols}
 				min={metaSettings.cols.min}
@@ -289,7 +297,11 @@
 				onNumberChange={handleInputChange}
 			/>
 		</SettingInput>
-		<SettingInput label="Number of items" changed={hasSettingChanged('numItems')}>
+		<SettingInput
+			label="Number of items"
+			changed={hasSettingChanged('numItems')}
+			tooltip={`Number of cells to remember (${metaSettings.numItems.min}-${metaSettings.numItems.max}, cannot exceed grid size)`}
+		>
 			<NumberInput
 				bind:value={settings.numItems}
 				min={metaSettings.numItems.min}
@@ -298,7 +310,11 @@
 				onNumberChange={handleInputChange}
 			/>
 		</SettingInput>
-		<SettingInput label="Flash time (s)" changed={hasSettingChanged('flashTime')}>
+		<SettingInput
+			label="Flash time (s)"
+			changed={hasSettingChanged('flashTime')}
+			tooltip={`How long numbers are shown at the start (${metaSettings.flashTime.min}-${metaSettings.flashTime.max} seconds)`}
+		>
 			<NumberInput
 				bind:value={settings.flashTime}
 				min={metaSettings.flashTime.min}
@@ -308,7 +324,11 @@
 				onNumberChange={handleInputChange}
 			/>
 		</SettingInput>
-		<SettingInput label="Max attempts" changed={hasSettingChanged('maxAttempts')}>
+		<SettingInput
+			label="Max attempts"
+			changed={hasSettingChanged('maxAttempts')}
+			tooltip={`Maximum wrong attempts allowed (0 = unlimited)`}
+		>
 			<NumberInput
 				bind:value={settings.maxAttempts}
 				min={metaSettings.maxAttempts.min}
@@ -317,21 +337,33 @@
 				onNumberChange={handleInputChange}
 			/>
 		</SettingInput>
-		<SettingInput label="All Or Nothing" changed={hasSettingChanged('allOrNothing')}>
+		<SettingInput
+			label="All Or Nothing"
+			changed={hasSettingChanged('allOrNothing')}
+			tooltip="If enabled, wrong selection resets all progress"
+		>
 			<ToggleInput
 				bind:checked={settings.allOrNothing}
 				disabled={isGameActive}
 				onchange={handleInputChange}
 			/>
 		</SettingInput>
-		<SettingInput label="Unordered Mode" changed={hasSettingChanged('unordered')}>
+		<SettingInput
+			label="Unordered Mode"
+			changed={hasSettingChanged('unordered')}
+			tooltip="If enabled, numbers can be selected in any order"
+		>
 			<ToggleInput
 				bind:checked={settings.unordered}
 				disabled={isGameActive}
 				onchange={handleInputChange}
 			/>
 		</SettingInput>
-		<SettingInput label="Seed" changed={false}>
+		<SettingInput
+			label="Seed"
+			changed={false}
+			tooltip="Random seed for consistent number placement"
+		>
 			<NumberInput
 				bind:value={settings.seed}
 				min={0}

@@ -3,6 +3,7 @@
 	import { slide } from 'svelte/transition';
 	import type { PresetSettings, GameStatus, GameSettings } from '$lib/types';
 	import NumberInput from './inputs/NumberInput.svelte';
+	import ToggleInput from './inputs/ToggleInput.svelte';
 
 	const metaSettings = {
 		rows: { min: 2, max: 12 },
@@ -318,29 +319,21 @@
 				onNumberChange={handleInputChange}
 			/>
 		</div>
-		<div class="setting" class:changed={hasSettingChanged('allOrNothing')}>
-			<label title="When checked, resets all selections on a mistake" class="checkbox-label">
-				<span>All Or Nothing</span>
-				<input
-					type="checkbox"
-					id="allOrNothing-checkbox"
-					bind:checked={settings.allOrNothing}
-					onchange={handleInputChange}
-					disabled={isGameActive}
-				/>
-			</label>
+		<div class:changed={hasSettingChanged('allOrNothing')}>
+			<ToggleInput
+				bind:checked={settings.allOrNothing}
+				label="All Or Nothing"
+				disabled={isGameActive}
+				onchange={handleInputChange}
+			/>
 		</div>
-		<div class="setting" class:changed={hasSettingChanged('unordered')}>
-			<label title="When checked, numbers can be clicked in any order" class="checkbox-label">
-				<span>Unordered Mode</span>
-				<input
-					type="checkbox"
-					id="unordered-checkbox"
-					bind:checked={settings.unordered}
-					onchange={handleInputChange}
-					disabled={isGameActive}
-				/>
-			</label>
+		<div class:changed={hasSettingChanged('unordered')}>
+			<ToggleInput
+				bind:checked={settings.unordered}
+				label="Unordered Mode"
+				disabled={isGameActive}
+				onchange={handleInputChange}
+			/>
 		</div>
 	</div>
 {/if}

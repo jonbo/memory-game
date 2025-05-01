@@ -39,9 +39,12 @@
 	}
 
 	.setting span {
-		border-right: 1px solid #ccc;
+		box-shadow: 1px 1px 10px #ccc;
 		display: inline-flex;
 		height: 100%;
+		flex: 1;
+		margin-right: 10px;
+
 		align-items: center;
 		padding: 10px;
 		background: #f7f7f7;
@@ -50,6 +53,7 @@
 	.input-container {
 		display: flex;
 		align-items: center;
+		width: 115px;
 	}
 
 	.changed {

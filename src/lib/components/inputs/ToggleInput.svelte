@@ -17,7 +17,7 @@
 
 <style>
 	.toggle {
-		--toggle-width: 100px;
+		--toggle-width: 96px;
 		--toggle-height: 26px;
 		--toggle-background-on: #4caf50;
 		--toggle-background-off: #ccc;
@@ -29,7 +29,7 @@
 		display: inline-block;
 		width: var(--toggle-width);
 		height: var(--toggle-height);
-		margin: 0 10px;
+		margin: 0 8px;
 	}
 
 	.toggle input {

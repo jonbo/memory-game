@@ -45,15 +45,16 @@
 </script>
 
 <div class="number-input">
-	<button {disabled} onclick={decrement} class="step-btn" type="button">-</button>
+	<button {disabled} onclick={decrement} class="step-btn decrease" type="button">-</button>
 	<input type="number" {value} {min} {max} {step} {disabled} onchange={handleInput} />
-	<button {disabled} onclick={increment} class="step-btn" type="button">+</button>
+	<button {disabled} onclick={increment} class="step-btn increase" type="button">+</button>
 </div>
 
 <style>
 	.number-input {
 		display: flex;
 		align-items: center;
+		width: 100%;
 	}
 
 	input[type='number'] {
@@ -66,6 +67,9 @@
 		text-align: center;
 		-moz-appearance: textfield;
 	}
+	input[type='number']:not(:disabled) {
+		font-weight: 700;
+	}
 
 	input[type='number']::-webkit-outer-spin-button,
 	input[type='number']::-webkit-inner-spin-button {
@@ -76,12 +80,18 @@
 	.step-btn {
 		background: none;
 		border: none;
-		color: #4caf50;
-		font-size: 16px;
+
+		font-size: 18px;
 		font-weight: bold;
 		cursor: pointer;
 		padding: 0 8px;
 		transition: background-color 0.2s;
+	}
+	.decrease {
+		color: red;
+	}
+	.increase {
+		color: green;
 	}
 
 	.step-btn:hover:not(:disabled) {

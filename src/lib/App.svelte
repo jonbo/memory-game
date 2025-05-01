@@ -23,7 +23,7 @@
 	let gameState = $state({
 		gameStatus: 'initial' as GameStatus,
 		statusMessage: 'Change any settings or press "Start New Game"',
-		attempts: 0,
+		attempts: 0, // The wrong attempts
 		currentExpectedNumber: 1,
 		gameTime: 0, // seconds
 		timerInterval: null as ReturnType<typeof setInterval> | null,
@@ -208,6 +208,12 @@
 			return; // Don't proceed further
 		}
 
+		if (!settings.allOrNothing) {
+			gameState.statusMessage = `Wrong! Try finding ${gameState.currentExpectedNumber}.${attemptsText}`;
+		} else {
+			gameState.statusMessage = `Wrong!`;
+		}
+
 		// Revert the wrong cell after a delay
 		setTimeout(() => {
 			// Check if the cell wasn't corrected in the meantime (unlikely but safe)
@@ -221,9 +227,6 @@
 				// All or nothing mode: Reset all correct selections
 				clearSelectionsForHardMode();
 				gameState.statusMessage = `Wrong! Start again from 1.${attemptsText}`;
-			} else {
-				// Easy mode: Just continue
-				gameState.statusMessage = `Wrong! Try finding ${gameState.currentExpectedNumber}.${attemptsText}`;
 			}
 		}, 500); // Delay for showing the wrong state
 	}

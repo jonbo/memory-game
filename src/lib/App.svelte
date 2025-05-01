@@ -51,14 +51,6 @@
 	// --- Derived State ---
 	const totalCells = $derived(settings.rows * settings.cols);
 
-	// --- Effects ---
-	$effect(() => {
-		// Recalculate cell data when grid size changes (and game not in progress)
-		if (gameState.gameStatus === 'initial') {
-			initializeGridState();
-		}
-	});
-
 	$effect(() => {
 		// Cleanup timer on component unmount or when game ends
 		const currentTimer = gameState.timerInterval;
@@ -87,9 +79,10 @@
 	}
 
 	function handleSettingsChange(settings: GameSettings) {
+		// This assumes settings can only change when game is not in progress
 		gameState.gameStatus = 'initial'; // Reset game status on settings change
 
-		// This assumes settings can only change when game is not in progress
+		initializeGridState();
 
 		// Update initial seed with current setting seed ONLY if it has changed
 		if (settings.seed !== gameState.seed) {

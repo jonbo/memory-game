@@ -9,17 +9,18 @@ export interface CellState {
 	selected: boolean; // Track if this cell has been correctly selected
 }
 
-export type PresetSettings = Omit<GameSettings, 'selectedPreset'>;
+export type PresetSettings = Omit<GameSettings, 'selectedPreset' | 'seed'>;
 
 export interface GameSettings {
-    rows: number;
-    cols: number;
-    numItems: number;
-    flashTime: number;
-    maxAttempts: number;
-    allOrNothing: boolean;
-    unordered: boolean;
-    selectedPreset: string;
+	rows: number;
+	cols: number;
+	numItems: number;
+	flashTime: number;
+	maxAttempts: number;
+	allOrNothing: boolean;
+	unordered: boolean;
+	selectedPreset: string;
+	seed: number;
 }
 
 // Add other shared types as needed

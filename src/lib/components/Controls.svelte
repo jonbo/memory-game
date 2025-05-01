@@ -90,6 +90,7 @@
 			'maxAttempts',
 			'allOrNothing',
 			'unordered'
+			//'seed' // skip for now
 		];
 		return keys.every((key) => settingsA[key] === settingsB[key]);
 	}
@@ -170,6 +171,7 @@
 			maxAttempts,
 			allOrNothing,
 			unordered
+			//seed // skip saving seed for custom presets
 		};
 
 		customPresets[presetName] = newPreset;
@@ -327,6 +329,16 @@
 				bind:checked={settings.unordered}
 				disabled={isGameActive}
 				onchange={handleInputChange}
+			/>
+		</SettingInput>
+		<SettingInput label="Seed" changed={false}>
+			<NumberInput
+				bind:value={settings.seed}
+				min={0}
+				max={Number.MAX_SAFE_INTEGER}
+				disabled={isGameActive}
+				onNumberChange={handleInputChange}
+				smallMode={true}
 			/>
 		</SettingInput>
 	</div>

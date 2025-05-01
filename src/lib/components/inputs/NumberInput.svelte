@@ -7,7 +7,8 @@
 		max,
 		step,
 		disabled,
-		onNumberChange = () => {}
+		onNumberChange = () => {},
+		smallMode = false
 	} = $props<{
 		value: number;
 		min?: number;
@@ -15,6 +16,7 @@
 		step?: number;
 		disabled?: boolean;
 		onNumberChange: (value: number) => void;
+		smallMode?: boolean;
 	}>();
 
 	function increment() {
@@ -46,7 +48,16 @@
 
 <div class="number-input">
 	<button {disabled} onclick={decrement} class="step-btn decrease" type="button">-</button>
-	<input type="number" {value} {min} {max} {step} {disabled} onchange={handleInput} />
+	<input
+		class:small={smallMode}
+		type="number"
+		{value}
+		{min}
+		{max}
+		{step}
+		{disabled}
+		onchange={handleInput}
+	/>
 	<button {disabled} onclick={increment} class="step-btn increase" type="button">+</button>
 </div>
 
@@ -106,5 +117,8 @@
 	input:disabled {
 		background-color: #f5f5f5;
 		cursor: not-allowed;
+	}
+	input[type='number'].small {
+		font-size: 47%;
 	}
 </style>

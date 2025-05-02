@@ -29,11 +29,11 @@
 		timerInterval: null as ReturnType<typeof setInterval> | null,
 		startTime: 0,
 		cellsData: [] as CellState[],
-		readyAutoStartTime: 0, // The time when the game should start automatically by (after flashing)
-		seed: 0 // The initial seed value in game state
+		readyAutoStartTime: 0 // The time when the game should start automatically by (after flashing)
 	});
 
 	let seeded = new SeededRandom(settings.seed);
+	let shouldIncrementSeed = false;
 
 	// --- Helper Functions ---
 	function getCellIndex(row: number, col: number): number {
@@ -70,16 +70,16 @@
 		// This assumes settings can only change when game is not in progress
 		gameState.gameStatus = 'initial'; // Reset game status on settings change
 
+		shouldIncrementSeed = false;
 		initializeGridState();
-
-		// Update initial seed with current setting seed ONLY if it has changed
-		if (settings.seed !== gameState.seed) {
-			seeded.seed = settings.seed;
-			gameState.seed = settings.seed; // Update game state seed
-		}
 	}
 
 	async function startGame() {
+		if (shouldIncrementSeed) {
+			settings.seed++;
+		}
+		seeded.seed = settings.seed;
+
 		// Ensure numItems is valid before starting
 		if (settings.numItems > totalCells) {
 			gameState.statusMessage = `Cannot start: Number of items (${settings.numItems}) exceeds grid size (${totalCells}).`;
@@ -265,6 +265,7 @@
 	}
 
 	function endGame(status: 'won' | 'loss' | 'surrender') {
+		shouldIncrementSeed = true; // Increment seed on the next game
 		stopTimer();
 		gameState.gameStatus = status;
 

@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { untrack } from 'svelte';
 	import { slide } from 'svelte/transition';
 	import type { PresetSettings, GameStatus, GameSettings } from '$lib/types';
 	import NumberInput from './inputs/NumberInput.svelte';
 	import ToggleInput from './inputs/ToggleInput.svelte';
 	import SettingInput from './inputs/SettingInput.svelte';
+	import { shareSettings, parseSettingsFromUrl, clearSettingsFromUrl } from '../share';
 
 	const metaSettings = {
 		rows: { min: 2, max: 12 },
@@ -147,8 +147,28 @@
 		settings.selectedPreset = presetName;
 		onSettingsChange(settings);
 	}
+
+	function applyPresetsFromUrl() {
+		// Check for shared settings in URL hash on initial load
+		const preset = parseSettingsFromUrl();
+
+		if (!preset) {
+			return;
+		}
+		// Update the reactive settings object directly
+		Object.assign(settings, preset);
+		settings.selectedPreset = 'custom'; // Set to custom when user changes settings
+		onSettingsChange(settings);
+	}
 	// Ensure the selected preset is applied
 	applyPreset(settings.selectedPreset);
+	applyPresetsFromUrl();
+
+	$effect(() => {
+		if (gameStatus === 'flashing') {
+			clearSettingsFromUrl(); // Clear URL settings when game starts
+		}
+	});
 
 	function handlePresetChange(event: Event) {
 		const target = event.target as HTMLSelectElement;
@@ -258,7 +278,13 @@
 				🗑️
 			</button>
 		{/if}
-
+		<button
+			class="icon-button"
+			onclick={() => shareSettings(settings)}
+			title="Share current settings (url & to clipboard)"
+		>
+			🔗
+		</button>
 		<button
 			class="icon-button settings-toggle"
 			onclick={() => (showSettings = !showSettings)}

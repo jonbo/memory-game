@@ -18,17 +18,13 @@
 	}
 
 	const displayTime = $derived(formatTime(gameTime));
-	const shouldShowTimer = $derived(gameStatus !== 'initial');
+	const shouldShowTimer = $derived(gameStatus === 'active');
 </script>
 
-{#if shouldShowTimer}
-	<div class="stats">
-		<div class="timer">Time: {displayTime}</div>
-		<div class="status">{statusMessage}</div>
-	</div>
-{:else}
+<div class="stats">
+	<div class="timer" class:disabled={!shouldShowTimer}>Time: {displayTime}</div>
 	<div class="status">{statusMessage}</div>
-{/if}
+</div>
 
 <style>
 	.stats {
@@ -40,7 +36,7 @@
 	}
 
 	.timer {
-		font-size: 18px;
+		font-size: 15px;
 		font-weight: bold;
 	}
 
@@ -49,5 +45,8 @@
 		font-weight: bold;
 		height: 24px;
 		text-align: center;
+	}
+	.disabled {
+		opacity: 0.5;
 	}
 </style>

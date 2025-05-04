@@ -409,7 +409,7 @@
 		}}
 		id="start-button"
 		onclick={onStartGame}
-		disabled={gameStatus === 'flashing'}
+		disabled={gameStatus === 'flashing' || gameStatus === 'resetting'}
 	>
 		Start New Game
 	</button>

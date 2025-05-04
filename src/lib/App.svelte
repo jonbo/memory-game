@@ -88,11 +88,11 @@
 		}
 
 		initializeGridState(); // Reset grid state completely
-		gameState.gameStatus = 'flashing';
+		gameState.gameStatus = 'resetting';
 		gameState.statusMessage = 'Generating board...';
+		await delay(800); // Show an empty board for a moment
+		gameState.gameStatus = 'flashing';
 
-		// Use tick to ensure UI updates before potentially blocking generation
-		await tick();
 		generateNumberPositions();
 
 		gameState.readyAutoStartTime = Date.now() + settings.flashTime * 1000;

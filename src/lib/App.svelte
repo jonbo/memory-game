@@ -270,7 +270,7 @@
 		gameState.gameStatus = status;
 
 		if (status === 'won') {
-			gameState.statusMessage = `Congratulations! You won in ${gameState.gameTime} seconds!`;
+			gameState.statusMessage = `Congratulations! You won! ${gameState.attempts > 0 ? `(${gameState.attempts} wrong)` : '(Perfect!)'}`;
 		} else {
 			gameState.statusMessage = `Game over! You used ${gameState.attempts} attempts.`;
 			// Reveal all numbers on non-win

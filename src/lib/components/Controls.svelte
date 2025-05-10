@@ -5,6 +5,7 @@
 	import ToggleInput from './inputs/ToggleInput.svelte';
 	import SettingInput from './inputs/SettingInput.svelte';
 	import { shareSettings, parseSettingsFromUrl, clearSettingsFromUrl } from '../share';
+	import time from "$lib/Time.svelte";
 
 	const metaSettings = {
 		rows: { min: 2, max: 12 },
@@ -74,11 +75,7 @@
 		JSON.parse(localStorage.getItem(CUSTOM_PRESET_KEY) ?? '{}')
 	);
 
-	let currentTime = $state(Date.now());
-	setInterval(() => {
-		currentTime = Date.now();
-	}, 50); // Since we're only roughly tracking the time (0.1s)
-	const timeUntilStart = $derived(readyAutoStartTime - currentTime);
+	const timeUntilStart = $derived(readyAutoStartTime - time.current);
 
 	function areSettingsEqual(settingsA: GameSettings, settingsB?: PresetSettings): boolean {
 		if (!settingsB) return false;

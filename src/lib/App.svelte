@@ -5,6 +5,7 @@
 	import Grid from './components/Grid.svelte';
 	import type { CellState, CellDisplayState, GameStatus, GameSettings } from './types';
 	import { SeededRandom } from '$lib/math';
+	import time from '$lib/Time.svelte';
 
 	// --- Game Settings & State ---
 	let settings = $state<GameSettings>({
@@ -25,9 +26,8 @@
 		statusMessage: 'Change any settings or press "Start New Game"',
 		attempts: 0, // The wrong attempts
 		currentExpectedNumber: 1,
-		gameTime: 0, // seconds
-		timerInterval: null as ReturnType<typeof setInterval> | null,
-		startTime: 0,
+		startTime: 0, // Timestamp when game started (ms) or 0 if not started
+		endTime: 0, // Timestamp when game ended (ms) or 0 if not ended
 		cellsData: [] as CellState[],
 		readyAutoStartTime: 0 // The time when the game should start automatically by (after flashing)
 	});
@@ -51,6 +51,12 @@
 	// --- Derived State ---
 	const totalCells = $derived(settings.rows * settings.cols);
 
+	function getGameTime() {
+		if (gameState.startTime === 0) return 0; // Game not started
+		let endTime = (gameState.endTime === 0) ? time.current : gameState.endTime;
+		return Math.floor((endTime - gameState.startTime) / 1000);					
+	}
+
 	// --- Functions ---
 
 	function initializeGridState() {
@@ -62,7 +68,9 @@
 		}));
 		gameState.currentExpectedNumber = 1;
 		gameState.attempts = 0;
-		gameState.gameTime = 0;
+
+		gameState.startTime = 0;
+		gameState.endTime = 0;
 		gameState.gameStatus = 'initial';
 	}
 
@@ -144,7 +152,7 @@
 		});
 		gameState.gameStatus = 'active';
 		gameState.statusMessage = `Click cells in order: 1 to ${settings.numItems}`;
-		startTimer();
+		gameState.startTime = Date.now();
 	}
 
 	function handleCellClick(row: number, col: number) {
@@ -242,31 +250,9 @@
 		gameState.currentExpectedNumber = 1;
 	}
 
-	function startTimer() {
-		stopTimer(); // Clear existing timer first
-		gameState.startTime = Date.now();
-		gameState.gameTime = 0;
-		updateTimerDisplay(); // Update immediately
-		gameState.timerInterval = setInterval(updateTimerDisplay, 1000);
-	}
-
-	function stopTimer() {
-		if (gameState.timerInterval) {
-			clearInterval(gameState.timerInterval);
-			gameState.timerInterval = null;
-		}
-	}
-
-	function updateTimerDisplay() {
-		if (gameState.gameStatus === 'active') {
-			gameState.gameTime = Math.floor((Date.now() - gameState.startTime) / 1000);
-		}
-		// No need to manually update DOM, Stats component reacts to gameTime prop
-	}
-
 	function endGame(status: 'won' | 'loss' | 'surrender') {
 		shouldIncrementSeed = true; // Increment seed on the next game
-		stopTimer();
+		gameState.endTime = Date.now();
 		gameState.gameStatus = status;
 
 		if (status === 'won') {
@@ -307,7 +293,7 @@
 
 	<Stats
 		gameStatus={gameState.gameStatus}
-		gameTime={gameState.gameTime}
+		gameTime={getGameTime()}
 		statusMessage={gameState.statusMessage}
 	/>
 

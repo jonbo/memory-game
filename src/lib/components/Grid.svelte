@@ -6,7 +6,7 @@
 	let { rows, cols, cellsData, onCellClick } = $props<{
 		rows: number;
 		cols: number;
-		cellsData: CellState[];
+		cellsData: CellState[]; // Must be rows * cols
 		onCellClick: (row: number, col: number) => void;
 	}>();
 	let gridEl = $state<HTMLElement | undefined>();
@@ -29,15 +29,16 @@
 
 <svelte:window on:resize={scaleGrid} />
 <div bind:this={gridEl} class="grid" style:--cols={cols} style:--zoomLevel={zoomLevel}>
-	{#each cellsData as cell, index (index)}
-		{@const row = Math.floor(index / cols)}
-		{@const col = index % cols}
-		<Cell
-			number={cell.number}
-			displayNumber={cell.displayNumber}
-			state={cell.state}
-			onclick={() => onCellClick(row, col)}
-		/>
+	{#each { length: rows } as _, row (row)}
+		{#each { length: cols } as _, col (col)}
+			{@const cell = cellsData[row * cols + col]}
+			<Cell
+				number={cell.number}
+				displayNumber={cell.displayNumber}
+				state={cell.state}
+				onclick={() => onCellClick(row, col)}
+			/>
+		{/each}
 	{/each}
 </div>
 

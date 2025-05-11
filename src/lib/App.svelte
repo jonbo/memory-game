@@ -62,7 +62,6 @@
 	function initializeGridState() {
 		gameState.cellsData = Array.from({ length: totalCells }, (_, index) => ({
 			number: null, // Actual number in the cell
-			displayNumber: null, // Number currently shown
 			state: 'default' as CellDisplayState,
 			selected: false
 		}));
@@ -133,7 +132,6 @@
 		// Show numbers
 		gameState.cellsData.forEach((cell, index) => {
 			if (cell.number !== null) {
-				cell.displayNumber = cell.number;
 				cell.state = 'flash';
 			}
 		});
@@ -146,7 +144,6 @@
 
 		gameState.cellsData.forEach((cell) => {
 			if (cell.state === 'flash') {
-				cell.displayNumber = null;
 				cell.state = 'default';
 			}
 		});
@@ -169,7 +166,6 @@
 			// Clicked on a cell with a number
 			if (cell.number === gameState.currentExpectedNumber || settings.unordered) {
 				// Correct selection
-				cell.displayNumber = cell.number;
 				cell.state = 'correct';
 				cell.selected = true;
 
@@ -198,8 +194,7 @@
 	function handleIncorrectSelection(cell: CellState) {
 		gameState.attempts++;
 
-		// Temporarily show the wrong number (if any) or just mark as wrong
-		cell.displayNumber = cell.number;
+		// Temporarily mark as wrong
 		cell.state = 'wrong';
 
 		const attemptsLeft =
@@ -226,7 +221,6 @@
 		setTimeout(() => {
 			// Check if the cell wasn't corrected in the meantime (unlikely but safe)
 			if (cell.state === 'wrong') {
-				cell.displayNumber = null;
 				cell.state = 'default';
 			}
 
@@ -244,7 +238,6 @@
 			if (cell.selected) {
 				cell.selected = false;
 				cell.state = 'default';
-				cell.displayNumber = null;
 			}
 		});
 		gameState.currentExpectedNumber = 1;
@@ -262,7 +255,6 @@
 			// Reveal all numbers on non-win
 			gameState.cellsData.forEach((cell) => {
 				if (cell.number !== null && cell.state !== 'correct') {
-					cell.displayNumber = cell.number;
 					// Optionally add a 'revealed' state for different styling
 					cell.state = 'flash'; // Reuse flash style for reveal
 				}

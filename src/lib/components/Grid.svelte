@@ -33,12 +33,7 @@
 	{#each { length: rows } as _, row (row)}
 		{#each { length: cols } as _, col (col)}
 			{@const cell = cellsData[row * cols + col]}
-			<Cell
-				number={cell.number}
-				displayNumber={cell.displayNumber}
-				state={cell.state}
-				onclick={() => onCellClick(row, col)}
-			/>
+			<Cell number={cell.number} state={cell.state} onclick={() => onCellClick(row, col)} />
 		{/each}
 	{/each}
 </div>

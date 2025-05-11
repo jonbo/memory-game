@@ -12,6 +12,7 @@
 	let gridEl = $state<HTMLElement | undefined>();
 	let zoomLevel: number = $state(1);
 
+	// This effect fixes the grid zoom on smaller screens when columns are changed
 	$effect(() => {
 		cols; // dependency
 		untrack(() => {

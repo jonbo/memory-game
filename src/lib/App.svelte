@@ -53,7 +53,7 @@
 
 	function getGameTime() {
 		if (gameState.startTime === 0) return 0; // Game not started
-		let endTime = (gameState.endTime === 0) ? time.current : gameState.endTime;
+		let endTime = gameState.endTime === 0 ? time.current : gameState.endTime;
 		return Math.floor((endTime - gameState.startTime) / 1000);					
 	}
 

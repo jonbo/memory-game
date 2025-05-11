@@ -5,7 +5,7 @@
 	import ToggleInput from './inputs/ToggleInput.svelte';
 	import SettingInput from './inputs/SettingInput.svelte';
 	import { shareSettings, parseSettingsFromUrl, clearSettingsFromUrl } from '../share';
-	import time from "$lib/Time.svelte";
+	import time from '$lib/Time.svelte';
 
 	const metaSettings = {
 		rows: { min: 2, max: 12 },

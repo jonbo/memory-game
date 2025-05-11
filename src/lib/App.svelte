@@ -54,7 +54,7 @@
 	function getGameTime() {
 		if (gameState.startTime === 0) return 0; // Game not started
 		let endTime = gameState.endTime === 0 ? time.current : gameState.endTime;
-		return Math.floor((endTime - gameState.startTime) / 1000);					
+		return Math.floor((endTime - gameState.startTime) / 1000);
 	}
 
 	// --- Functions ---
@@ -297,15 +297,12 @@
 		statusMessage={gameState.statusMessage}
 	/>
 
-	{#key settings.rows + '-' + settings.cols}
-		<!-- Re-render Grid if dimensions change -->
-		<Grid
-			rows={settings.rows}
-			cols={settings.cols}
-			cellsData={gameState.cellsData}
-			onCellClick={handleCellClick}
-		/>
-	{/key}
+	<Grid
+		rows={settings.rows}
+		cols={settings.cols}
+		cellsData={gameState.cellsData}
+		onCellClick={handleCellClick}
+	/>
 </main>
 
 <style>
